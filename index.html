@@ -417,4 +417,2695 @@
               class="w-full rounded-xl border border-emerald-300 bg-white px-3.5 py-2 text-sm text-slate-900 tabular-nums focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition"
             />
           </div>
-          <div id="lightGreenChips" cla
+          <div id="lightGreenChips" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Not Color Tier -->
+        <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 md:col-span-2 xl:col-span-2">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-sm bg-white border border-slate-300"></span>
+              <h3 class="text-sm font-bold text-slate-900">Not Color</h3>
+            </div>
+            <span class="text-[11px] font-semibold text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md">
+              No Highlight
+            </span>
+          </div>
+          <p class="text-xs text-slate-600">
+            Amounts below all configured Light Red, Light Orange, Light Yellow, and Light Green limits receive no highlight color (Not Color).
+          </p>
+          <div id="notColorChips" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+        <p id="limitSettingsError" class="text-xs font-semibold text-rose-600 hidden"></p>
+        <div class="flex items-center gap-2 ml-auto">
+          <button
+            type="button"
+            id="resetLimitDefaultsBtn"
+            class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition cursor-pointer"
+          >
+            Reset Default Limits
+          </button>
+          <button
+            type="button"
+            id="saveLimitSettingsBtn"
+            class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
+          >
+            Save Limit Settings
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Summary KPI Strip -->
+    <section aria-label="Overview Metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Grand Total Bill Amt</p>
+        <p id="kpiGrandTotal" class="mt-1.5 text-2xl font-bold text-slate-900 tabular-nums">₹0.00</p>
+        <p id="kpiGrandTotalSub" class="mt-1 text-xs text-slate-500">Across all entries</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Active Calendar Days</p>
+        <p id="kpiActiveDays" class="mt-1.5 text-2xl font-bold text-indigo-600 tabular-nums">0</p>
+        <p class="mt-1 text-xs text-slate-500">Distinct dates with daily sums</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Entries</p>
+        <p id="kpiTotalEntries" class="mt-1.5 text-2xl font-bold text-slate-900 tabular-nums">0</p>
+        <p class="mt-1 text-xs text-slate-500">Bills &amp; cheques logged</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Daily Average (Active)</p>
+        <p id="kpiDailyAvgAmt" class="mt-1.5 text-2xl font-bold text-emerald-600 tabular-nums">₹0.00</p>
+        <p id="kpiHighestDayDate" class="mt-1 text-xs text-slate-500">No date recorded</p>
+      </div>
+    </section>
+
+    <!-- View Mode Switcher & Workspace Header -->
+    <section aria-label="Workspace View Switcher" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <button
+          type="button"
+          id="workspaceNewEntryBtn"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs sm:text-sm font-semibold shadow-2xs transition cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>New Entry</span>
+        </button>
+
+        <div class="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200 self-start" role="tablist" aria-label="Select data view">
+          <button
+            type="button"
+            id="tabCardViewBtn"
+            role="tab"
+            aria-selected="true"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-2xs transition cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            <span>30-Day Card View</span>
+          </button>
+
+          <button
+            type="button"
+            id="tabTableViewBtn"
+            role="tab"
+            aria-selected="false"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span>Table View</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Global Quick Search & Daily Sum Panel Toggle -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="relative flex-1 sm:flex-initial sm:w-64">
+          <label for="searchInput" class="sr-only">Search entries</label>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Search agent, company, cheque..."
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 focus:bg-white pl-9 pr-3.5 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+          />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
+        </div>
+
+        <button
+          type="button"
+          id="toggleDailySumBtn"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-semibold transition cursor-pointer"
+        >
+          <span id="toggleDailySumText">Hide Daily Sum Table</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Primary Workspace: Separate Daily Sum Total Table (Date & Amt) + Active View (30-Day Card View / Table View) -->
+    <div id="workspaceGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- SEPARATE DAILY SUM TOTAL TABLE (Columns: Date and Amt) -->
+      <section
+        id="dailySumSection"
+        aria-labelledby="dailySumHeading"
+        class="lg:col-span-4 bg-white rounded-2xl border-2 border-indigo-100 shadow-xs overflow-hidden"
+      >
+        <div class="p-5 bg-gradient-to-r from-indigo-50/80 to-white border-b border-slate-200 flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+              <h2 id="dailySumHeading" class="text-base sm:text-lg font-bold text-slate-900">
+                Daily Sum Total
+              </h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Each distinct calendar day summed separately
+            </p>
+          </div>
+          <span id="dailySumBadge" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-800 tabular-nums">
+            0 Days
+          </span>
+        </div>
+
+        <div class="overflow-x-auto max-h-[680px] overflow-y-auto">
+          <table class="w-full text-left border-collapse">
+            <thead class="sticky top-0 z-10">
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-600">
+                <th scope="col" class="py-3 px-4">Date</th>
+                <th scope="col" class="py-3 px-4 text-right">Amt</th>
+              </tr>
+            </thead>
+            <tbody id="dailySumTableBody" class="divide-y divide-slate-100 text-sm">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+            <tfoot id="dailySumTableFoot" class="bg-slate-900 text-white font-bold text-sm sticky bottom-0">
+              <tr>
+                <td class="py-3.5 px-4">
+                  <span>Grand Total</span>
+                  <span id="dailySumFootCount" class="ml-1.5 text-xs font-normal text-slate-300"></span>
+                </td>
+                <td id="dailySumGrandTotal" class="py-3.5 px-4 text-right tabular-nums text-emerald-300">
+                  ₹0.00
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+          <span>Click any date row to filter entries</span>
+          <button
+            id="clearDateFilterLink"
+            type="button"
+            class="hidden text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer"
+          >
+            Show all dates
+          </button>
+        </div>
+      </section>
+
+      <!-- 30-DAY SEPARATE CARD VIEW SECTION -->
+      <section
+        id="cardViewSection"
+        aria-labelledby="cardViewHeading"
+        class="lg:col-span-8 space-y-4"
+      >
+        <!-- 30-Day Window Toolbar & Filter Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 id="cardViewHeading" class="text-base sm:text-lg font-bold text-slate-900">
+                  30-Day Separate Day Cards
+                </h2>
+                <span id="windowRangeBadge" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 tabular-nums">
+                  -- to --
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Each of the 30 days is displayed as its own card with its separate daily total and entries
+              </p>
+            </div>
+
+            <!-- 30-Day Window Navigation Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                id="prev30DaysBtn"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition cursor-pointer"
+                title="Previous 30 Days"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Prev 30d</span>
+              </button>
+
+              <label for="windowStartDateInput" class="sr-only">30-Day Window Start Date</label>
+              <input
+                type="date"
+                id="windowStartDateInput"
+                class="rounded-xl border border-slate-300 bg-slate-50 focus:bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:border-indigo-500 focus:outline-none tabular-nums"
+                title="Select starting date for the 30-day card grid"
+              />
+
+              <button
+                type="button"
+                id="current30DaysBtn"
+                class="inline-flex items-center px-2.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 text-xs font-semibold transition cursor-pointer"
+              >
+                Current 30 Days
+              </button>
+
+              <button
+                type="button"
+                id="next30DaysBtn"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition cursor-pointer"
+                title="Next 30 Days"
+              >
+                <span>Next 30d</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 30-Day Window Summary Strip & Active Filter Toggle -->
+          <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+            <div class="flex flex-wrap items-center gap-3 text-xs">
+              <span class="text-slate-600">
+                30-Day Window Total:
+                <strong id="window30TotalAmt" class="text-indigo-700 font-bold text-sm tabular-nums ml-1">₹0.00</strong>
+              </span>
+              <span class="text-slate-300">|</span>
+              <span id="window30StatsText" class="text-slate-500 font-medium">
+                0 active days • 0 entries
+              </span>
+            </div>
+
+            <div class="inline-flex p-0.5 rounded-xl bg-slate-100 border border-slate-200 self-start sm:self-auto">
+              <button
+                type="button"
+                id="filterAll30DaysBtn"
+                class="px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs transition cursor-pointer"
+              >
+                All 30 Days
+              </button>
+              <button
+                type="button"
+                id="filterActiveDaysOnlyBtn"
+                class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer"
+              >
+                Active Days Only
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 30 Separate Day Cards Responsive Grid -->
+        <div
+          id="thirtyDayCardsGrid"
+          class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
+        >
+          <!-- 30 individual day cards rendered dynamically by JavaScript -->
+        </div>
+      </section>
+
+      <!-- DETAILED CALENDAR DAY ENTRY TABLE VIEW -->
+      <section
+        id="tableViewSection"
+        aria-labelledby="entriesListHeading"
+        class="hidden lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden"
+      >
+        <div class="p-5 border-b border-slate-200 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <h2 id="entriesListHeading" class="text-base sm:text-lg font-bold text-slate-900">
+                Calendar Day Entries (Table View)
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-500">
+                Detailed records with Date, Agent or Company Name, Bill Amt, and Cheque No.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="filteredCountBadge" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 tabular-nums">
+                0 entries
+              </span>
+            </div>
+          </div>
+
+          <!-- Date Filter Controls -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1">
+            <div class="sm:col-span-8">
+              <label for="filterDateInput" class="sr-only">Filter by date</label>
+              <input
+                type="date"
+                id="filterDateInput"
+                class="w-full rounded-xl border border-slate-300 bg-slate-50 focus:bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+              />
+            </div>
+
+            <div class="sm:col-span-4">
+              <button
+                id="resetFiltersBtn"
+                type="button"
+                class="w-full h-full px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition cursor-pointer"
+              >
+                Clear Date &amp; Search Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Entries Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-600">
+                <th scope="col" class="py-3 px-4">Date</th>
+                <th scope="col" class="py-3 px-4">Agent or Company Name</th>
+                <th scope="col" class="py-3 px-4 text-right">Bill Amt</th>
+                <th scope="col" class="py-3 px-4">Cheque No.</th>
+                <th scope="col" class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="entriesTableBody" class="divide-y divide-slate-100 text-sm">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+          <span id="filteredSummaryText" class="text-slate-600">
+            Showing 0 entries
+          </span>
+          <div class="font-semibold text-slate-900 tabular-nums">
+            <span>Filtered Total: </span>
+            <span id="filteredTotalAmt" class="text-indigo-700">₹0.00</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-white mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+      <p>Calendar Day Entry &amp; Daily Sum Tracker • Local storage + optional Google Sheet database sync</p>
+      <p id="storageStatusText">Storage: Active</p>
+    </div>
+  </footer>
+
+  <!-- New / Update Calendar Day Entry Popup Modal -->
+  <div
+    id="entryFormModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="entryFormHeading"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/55 backdrop-blur-[2px] transition-opacity"
+  >
+    <div class="w-full max-w-lg rounded-2xl bg-white border border-slate-200 shadow-xl overflow-hidden transform transition-all">
+      <div class="px-5 py-4 bg-gradient-to-r from-indigo-50/90 to-white border-b border-slate-200 flex items-start justify-between gap-3">
+        <div>
+          <h2 id="entryFormHeading" class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span id="formModeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              New Entry
+            </span>
+            <span id="formTitleText">Add Calendar Day Entry</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Enter Date, Agent and Company Name, Bill Amount, and Cheque No. Daily totals update automatically.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="closeEntryFormModalXBtn"
+          aria-label="Close entry form"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer shrink-0"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="entryForm" novalidate class="p-5 space-y-4">
+        <input type="hidden" id="editingId" value="" />
+
+        <!-- 1. Date Field -->
+        <div>
+          <label for="entryDate" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            Date <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="date"
+            id="entryDate"
+            name="entryDate"
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+          />
+          <p id="dateError" class="hidden mt-1 text-xs text-rose-600 font-medium"></p>
+        </div>
+
+        <!-- 2. Agent and Company Name Field -->
+        <div>
+          <label for="agentCompany" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            Agent and Company Name <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="agentCompany"
+            name="agentCompany"
+            placeholder="e.g., Malabar Traders or Rajesh Nair"
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+          />
+          <p id="agentError" class="hidden mt-1 text-xs text-rose-600 font-medium"></p>
+        </div>
+
+        <!-- 3. Bill Amount Field -->
+        <div>
+          <label for="billAmt" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            Bill Amount <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="number"
+            id="billAmt"
+            name="billAmt"
+            step="0.01"
+            min="0.01"
+            placeholder="0.00"
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 tabular-nums placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+          />
+          <p id="amtError" class="hidden mt-1 text-xs text-rose-600 font-medium"></p>
+        </div>
+
+        <!-- 4. Cheque No Field -->
+        <div>
+          <label for="chequeNo" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            Cheque No <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="chequeNo"
+            name="chequeNo"
+            placeholder="e.g., CHQ-88412"
+            required
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition"
+          />
+          <p id="chequeError" class="hidden mt-1 text-xs text-rose-600 font-medium"></p>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="pt-3 border-t border-slate-100 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5">
+          <button
+            id="cancelEditBtn"
+            type="button"
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs sm:text-sm font-semibold text-slate-700 transition cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            id="submitEntryBtn"
+            type="submit"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-xs transition cursor-pointer"
+          >
+            <svg id="submitBtnIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span id="submitBtnText">Add Entry</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Entry Details Popup Modal -->
+  <div
+    id="entryDetailsModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="entryDetailsTitle"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/55 backdrop-blur-[2px] transition-opacity"
+  >
+    <div class="w-full max-w-md rounded-2xl bg-white border border-slate-200 shadow-xl overflow-hidden transform transition-all">
+      <div class="px-5 py-4 bg-gradient-to-r from-indigo-50/90 to-white border-b border-slate-200 flex items-start justify-between gap-3">
+        <div class="flex items-start gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800">
+              Entry Details
+            </span>
+            <h2 id="entryDetailsTitle" class="text-base sm:text-lg font-bold text-slate-900 mt-0.5 truncate">
+              Calendar Day Entry
+            </h2>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="closeEntryDetailsXBtn"
+          aria-label="Close entry details"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-3 text-xs sm:text-sm">
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Agent or Company Name</p>
+            <p id="detailModalAgent" class="text-sm sm:text-base font-bold text-slate-900 mt-0.5 break-words">--</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Date</p>
+              <p id="detailModalDate" class="font-semibold text-slate-800 tabular-nums mt-0.5">--</p>
+              <p id="detailModalWeekday" class="text-[11px] text-slate-500">--</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Bill No / Cheque No.</p>
+              <p id="detailModalBillNo" class="font-mono text-xs font-semibold text-indigo-700 mt-0.5 break-all">--</p>
+              <p id="detailModalCheque" class="font-mono font-semibold text-slate-800 mt-0.5 break-all">--</p>
+            </div>
+          </div>
+
+          <div class="pt-2.5 border-t border-slate-200 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Bill Amt</p>
+              <span id="detailModalShadeBadge" class="hidden mt-1 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold"></span>
+            </div>
+            <span id="detailModalAmt" class="text-lg sm:text-xl font-bold text-indigo-700 tabular-nums">--</span>
+          </div>
+
+          <div class="pt-2.5 border-t border-slate-200 flex items-center justify-between gap-2 text-xs">
+            <span class="text-slate-500 font-medium">Same-Day Sum Total (<span id="detailModalDayCount">0 entries</span>)</span>
+            <span id="detailModalDaySum" class="font-bold text-slate-900 tabular-nums">--</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <button
+            type="button"
+            id="detailModalDeleteBtn"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-xs font-semibold text-rose-700 transition cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Delete</span>
+          </button>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <button
+              type="button"
+              id="detailModalEditBtn"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-xs font-semibold text-indigo-700 transition cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <span>Edit Entry</span>
+            </button>
+
+            <button
+              type="button"
+              id="closeEntryDetailsBtn"
+              class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Warning Popup Modal: Delete Entry Confirmation -->
+  <div
+    id="deleteWarningModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteWarningTitle"
+    aria-describedby="deleteWarningDesc"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/55 backdrop-blur-[2px] transition-opacity"
+  >
+    <div
+      id="deleteWarningCard"
+      class="w-full max-w-md rounded-2xl bg-white border-2 border-rose-200 shadow-xl overflow-hidden transform transition-all"
+    >
+      <div class="px-5 py-4 bg-rose-50/90 border-b border-rose-200 flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 border border-rose-300 text-rose-700 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-200 text-rose-950">
+            Warning
+          </span>
+          <h2 id="deleteWarningTitle" class="text-base sm:text-lg font-bold text-rose-950 mt-0.5">
+            Delete Calendar Day Entry?
+          </h2>
+          <p id="deleteWarningDesc" class="text-xs sm:text-sm text-rose-900/80 mt-0.5">
+            This action cannot be undone and will recalculate that day's sum total.
+          </p>
+        </div>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3.5 space-y-2 text-xs sm:text-sm">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Agent / Company</span>
+            <span id="deleteModalAgent" class="font-bold text-slate-900 text-right truncate">--</span>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Date</span>
+            <span id="deleteModalDate" class="font-semibold text-slate-800 tabular-nums">--</span>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Cheque No.</span>
+            <span id="deleteModalCheque" class="font-mono text-xs font-semibold text-slate-700">--</span>
+          </div>
+          <div class="pt-2 border-t border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-slate-600 font-semibold">Bill Amt</span>
+            <span id="deleteModalAmt" class="text-base font-bold text-rose-700 tabular-nums">--</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-1">
+          <button
+            type="button"
+            id="cancelDeleteModalBtn"
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 active:bg-slate-100 text-xs sm:text-sm font-semibold text-slate-700 transition cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="confirmDeleteModalBtn"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white text-xs sm:text-sm font-semibold shadow-xs transition cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Delete Entry</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Calendar Day Entry & Daily Sum Tracker
+     */
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'calendar_day_entries_v2';
+      const JSON_SNAPSHOT_KEY = 'calendar_day_entries_json_snapshot_v1';
+      const CURRENCY_KEY = 'calendar_day_entries_currency_v1';
+      const LIMIT_SETTINGS_KEY = 'calendar_day_entries_limit_settings_v1';
+      const SHEET_DB_CONFIG_KEY = 'calendar_day_entries_sheet_db_v1';
+
+      const DEFAULT_LIMIT_SETTINGS = {
+        enabled: true,
+        lightRedLimits: [100000, 85000, 75000],
+        lightOrangeLimits: [65000, 55000],
+        lightYellowLimits: [45000, 35000],
+        lightGreenLimits: [25000, 15000],
+      };
+
+      const CURRENCY_CONFIG = {
+        INR: { locale: 'en-IN', currency: 'INR', symbol: '₹' },
+        USD: { locale: 'en-US', currency: 'USD', symbol: '$' },
+        EUR: { locale: 'de-DE', currency: 'EUR', symbol: '€' },
+        GBP: { locale: 'en-GB', currency: 'GBP', symbol: '£' },
+      };
+
+      // Application state
+      let entries = [];
+      let selectedCurrency = 'INR';
+      let limitSettings = {
+        enabled: DEFAULT_LIMIT_SETTINGS.enabled,
+        lightRedLimits: [...DEFAULT_LIMIT_SETTINGS.lightRedLimits],
+        lightOrangeLimits: [...DEFAULT_LIMIT_SETTINGS.lightOrangeLimits],
+        lightYellowLimits: [...DEFAULT_LIMIT_SETTINGS.lightYellowLimits],
+        lightGreenLimits: [...DEFAULT_LIMIT_SETTINGS.lightGreenLimits],
+      };
+      let activeViewMode = 'cards';
+      let showDailySumPanel = true;
+      let showLimitSettingsPanel = false;
+      let cardFilterMode = 'all';
+      let windowStartDate = '';
+      let filterDate = '';
+      let searchQuery = '';
+      let showSheetDbPanel = false;
+      let sheetDbConfig = {
+        webhookUrl: '',
+        autoSync: true,
+        lastSyncAt: '',
+      };
+      let bannerTimeout = null;
+      let pendingConfirmAction = null;
+      let pendingDeleteEntryId = null;
+      let activeDetailEntryId = null;
+
+      // Cached DOM element references
+      const dom = {
+        openNewEntryModalBtn: document.getElementById('openNewEntryModalBtn'),
+        workspaceNewEntryBtn: document.getElementById('workspaceNewEntryBtn'),
+        entryFormModal: document.getElementById('entryFormModal'),
+        closeEntryFormModalXBtn: document.getElementById('closeEntryFormModalXBtn'),
+        currencySelect: document.getElementById('currencySelect'),
+        openSheetDbBtn: document.getElementById('openSheetDbBtn'),
+        sheetDbPanel: document.getElementById('sheetDbPanel'),
+        closeSheetDbBtn: document.getElementById('closeSheetDbBtn'),
+        sheetAutoSyncEnabled: document.getElementById('sheetAutoSyncEnabled'),
+        sheetWebhookUrlInput: document.getElementById('sheetWebhookUrlInput'),
+        sheetDbError: document.getElementById('sheetDbError'),
+        saveSheetUrlBtn: document.getElementById('saveSheetUrlBtn'),
+        pullFromSheetBtn: document.getElementById('pullFromSheetBtn'),
+        pushToSheetBtn: document.getElementById('pushToSheetBtn'),
+        sheetSyncStatusText: document.getElementById('sheetSyncStatusText'),
+        openLimitSettingsBtn: document.getElementById('openLimitSettingsBtn'),
+        limitSettingsPanel: document.getElementById('limitSettingsPanel'),
+        closeLimitSettingsBtn: document.getElementById('closeLimitSettingsBtn'),
+        limitHighlightEnabled: document.getElementById('limitHighlightEnabled'),
+        lightRedLimitsInput: document.getElementById('lightRedLimitsInput'),
+        lightOrangeLimitsInput: document.getElementById('lightOrangeLimitsInput'),
+        lightYellowLimitsInput: document.getElementById('lightYellowLimitsInput'),
+        lightGreenLimitsInput: document.getElementById('lightGreenLimitsInput'),
+        lightRedChips: document.getElementById('lightRedChips'),
+        lightOrangeChips: document.getElementById('lightOrangeChips'),
+        lightYellowChips: document.getElementById('lightYellowChips'),
+        lightGreenChips: document.getElementById('lightGreenChips'),
+        notColorChips: document.getElementById('notColorChips'),
+        limitSettingsError: document.getElementById('limitSettingsError'),
+        resetLimitDefaultsBtn: document.getElementById('resetLimitDefaultsBtn'),
+        saveLimitSettingsBtn: document.getElementById('saveLimitSettingsBtn'),
+        resetSamplesBtn: document.getElementById('resetSamplesBtn'),
+        clearAllBtn: document.getElementById('clearAllBtn'),
+        exportCsvBtn: document.getElementById('exportCsvBtn'),
+        exportJsonBtn: document.getElementById('exportJsonBtn'),
+        feedbackBanner: document.getElementById('feedbackBanner'),
+        feedbackIcon: document.getElementById('feedbackIcon'),
+        feedbackText: document.getElementById('feedbackText'),
+        confirmActionBtn: document.getElementById('confirmActionBtn'),
+        dismissBannerBtn: document.getElementById('dismissBannerBtn'),
+        kpiGrandTotal: document.getElementById('kpiGrandTotal'),
+        kpiGrandTotalSub: document.getElementById('kpiGrandTotalSub'),
+        kpiActiveDays: document.getElementById('kpiActiveDays'),
+        kpiTotalEntries: document.getElementById('kpiTotalEntries'),
+        kpiDailyAvgAmt: document.getElementById('kpiDailyAvgAmt'),
+        kpiHighestDayDate: document.getElementById('kpiHighestDayDate'),
+        entryForm: document.getElementById('entryForm'),
+        editingId: document.getElementById('editingId'),
+        entryDate: document.getElementById('entryDate'),
+        agentCompany: document.getElementById('agentCompany'),
+        billNo: document.getElementById('billNo'),
+        billAmt: document.getElementById('billAmt'),
+        chequeNo: document.getElementById('chequeNo'),
+        dateError: document.getElementById('dateError'),
+        agentError: document.getElementById('agentError'),
+        amtError: document.getElementById('amtError'),
+        chequeError: document.getElementById('chequeError'),
+        submitEntryBtn: document.getElementById('submitEntryBtn'),
+        submitBtnIcon: document.getElementById('submitBtnIcon'),
+        submitBtnText: document.getElementById('submitBtnText'),
+        formModeBadge: document.getElementById('formModeBadge'),
+        formTitleText: document.getElementById('formTitleText'),
+        cancelEditBtn: document.getElementById('cancelEditBtn'),
+        tabCardViewBtn: document.getElementById('tabCardViewBtn'),
+        tabTableViewBtn: document.getElementById('tabTableViewBtn'),
+        searchInput: document.getElementById('searchInput'),
+        toggleDailySumBtn: document.getElementById('toggleDailySumBtn'),
+        toggleDailySumText: document.getElementById('toggleDailySumText'),
+        workspaceGrid: document.getElementById('workspaceGrid'),
+        dailySumSection: document.getElementById('dailySumSection'),
+        dailySumBadge: document.getElementById('dailySumBadge'),
+        dailySumTableBody: document.getElementById('dailySumTableBody'),
+        dailySumTableFoot: document.getElementById('dailySumTableFoot'),
+        dailySumFootCount: document.getElementById('dailySumFootCount'),
+        dailySumGrandTotal: document.getElementById('dailySumGrandTotal'),
+        clearDateFilterLink: document.getElementById('clearDateFilterLink'),
+        cardViewSection: document.getElementById('cardViewSection'),
+        windowRangeBadge: document.getElementById('windowRangeBadge'),
+        prev30DaysBtn: document.getElementById('prev30DaysBtn'),
+        windowStartDateInput: document.getElementById('windowStartDateInput'),
+        current30DaysBtn: document.getElementById('current30DaysBtn'),
+        next30DaysBtn: document.getElementById('next30DaysBtn'),
+        window30TotalAmt: document.getElementById('window30TotalAmt'),
+        window30StatsText: document.getElementById('window30StatsText'),
+        filterAll30DaysBtn: document.getElementById('filterAll30DaysBtn'),
+        filterActiveDaysOnlyBtn: document.getElementById('filterActiveDaysOnlyBtn'),
+        thirtyDayCardsGrid: document.getElementById('thirtyDayCardsGrid'),
+        tableViewSection: document.getElementById('tableViewSection'),
+        filteredCountBadge: document.getElementById('filteredCountBadge'),
+        filterDateInput: document.getElementById('filterDateInput'),
+        resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+        entriesTableBody: document.getElementById('entriesTableBody'),
+        filteredSummaryText: document.getElementById('filteredSummaryText'),
+        filteredTotalAmt: document.getElementById('filteredTotalAmt'),
+        storageStatusText: document.getElementById('storageStatusText'),
+        entryDetailsModal: document.getElementById('entryDetailsModal'),
+        closeEntryDetailsXBtn: document.getElementById('closeEntryDetailsXBtn'),
+        closeEntryDetailsBtn: document.getElementById('closeEntryDetailsBtn'),
+        detailModalAgent: document.getElementById('detailModalAgent'),
+        detailModalDate: document.getElementById('detailModalDate'),
+        detailModalWeekday: document.getElementById('detailModalWeekday'),
+        detailModalBillNo: document.getElementById('detailModalBillNo'),
+        detailModalCheque: document.getElementById('detailModalCheque'),
+        detailModalAmt: document.getElementById('detailModalAmt'),
+        detailModalShadeBadge: document.getElementById('detailModalShadeBadge'),
+        detailModalDayCount: document.getElementById('detailModalDayCount'),
+        detailModalDaySum: document.getElementById('detailModalDaySum'),
+        detailModalEditBtn: document.getElementById('detailModalEditBtn'),
+        detailModalDeleteBtn: document.getElementById('detailModalDeleteBtn'),
+        deleteWarningModal: document.getElementById('deleteWarningModal'),
+        deleteModalAgent: document.getElementById('deleteModalAgent'),
+        deleteModalDate: document.getElementById('deleteModalDate'),
+        deleteModalCheque: document.getElementById('deleteModalCheque'),
+        deleteModalAmt: document.getElementById('deleteModalAmt'),
+        cancelDeleteModalBtn: document.getElementById('cancelDeleteModalBtn'),
+        confirmDeleteModalBtn: document.getElementById('confirmDeleteModalBtn'),
+      };
+
+      /* ------------------ Utility & Formatting Helpers ------------------ */
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function generateId() {
+        return 'entry_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+      }
+
+      function formatCurrency(amount) {
+        const numeric = Number(amount) || 0;
+        const cfg = CURRENCY_CONFIG[selectedCurrency] || CURRENCY_CONFIG.INR;
+        try {
+          return new Intl.NumberFormat(cfg.locale, {
+            style: 'currency',
+            currency: cfg.currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(numeric);
+        } catch (_err) {
+          return `${cfg.symbol}${numeric.toFixed(2)}`;
+        }
+      }
+
+      function toLocalIsoDate(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function parseLocalIsoDate(isoStr) {
+        const [y, m, d] = String(isoStr).split('-').map(Number);
+        return new Date(y, (m || 1) - 1, d || 1);
+      }
+
+      function getLocalIsoDateOffset(offsetDays) {
+        const dt = new Date();
+        dt.setHours(12, 0, 0, 0);
+        dt.setDate(dt.getDate() + (Number(offsetDays) || 0));
+        return toLocalIsoDate(dt);
+      }
+
+      function addDaysToIsoDate(isoStr, daysToAdd) {
+        const dt = parseLocalIsoDate(isoStr);
+        dt.setHours(12, 0, 0, 0);
+        dt.setDate(dt.getDate() + (Number(daysToAdd) || 0));
+        return toLocalIsoDate(dt);
+      }
+
+      function getDefault30DayStartDate() {
+        return getLocalIsoDateOffset(-24);
+      }
+
+      function formatShortDate(isoStr) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(String(isoStr))) return String(isoStr || '');
+        const dt = parseLocalIsoDate(isoStr);
+        return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
+      function createSampleEntries() {
+        return [
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(-10),
+            agentOrCompany: 'Apex Industrial Supply',
+            billAmt: 112500.0,
+            chequeNo: 'CHQ-50192',
+          },
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(-7),
+            agentOrCompany: 'Malabar Logistics Ltd',
+            billAmt: 42000.0,
+            chequeNo: 'CHQ-50214',
+          },
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(-7),
+            agentOrCompany: 'Kochi Packaging Works',
+            billAmt: 18500.0,
+            chequeNo: 'CHQ-50215',
+          },
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(-3),
+            agentOrCompany: 'Western Freight & Co.',
+            billAmt: 78000.0,
+            chequeNo: 'CHQ-50288',
+          },
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(0),
+            agentOrCompany: 'Deccan Raw Materials',
+            billAmt: 28500.0,
+            chequeNo: 'CHQ-50340',
+          },
+          {
+            id: generateId(),
+            date: getLocalIsoDateOffset(2),
+            agentOrCompany: 'Harbor Engineering Services',
+            billAmt: 67500.0,
+            chequeNo: 'CHQ-50391',
+          },
+        ];
+      }
+
+      /* ------------------ Calculations ------------------ */
+
+      function computeDailySums(list) {
+        const map = new Map();
+        for (const item of list) {
+          if (!item || !item.date) continue;
+          const prev = map.get(item.date) || { date: item.date, amt: 0, count: 0 };
+          prev.amt = Math.round((prev.amt + (Number(item.billAmt) || 0)) * 100) / 100;
+          prev.count += 1;
+          map.set(item.date, prev);
+        }
+        return Array.from(map.values()).sort((a, b) => b.date.localeCompare(a.date));
+      }
+
+      function computeGrandTotal(list) {
+        let total = 0;
+        for (const item of list) {
+          total = Math.round((total + (Number(item?.billAmt) || 0)) * 100) / 100;
+        }
+        return total;
+      }
+
+      /* ------------------ Limit Color Highlight Logic ------------------ */
+
+      function parseLimitList(rawInput) {
+        const trimmed = String(rawInput ?? '').trim();
+        if (!trimmed) {
+          return { values: [], error: null };
+        }
+        const tokens = trimmed.split(/[\s,]+/).filter(Boolean);
+        const parsed = [];
+        for (const tok of tokens) {
+          const num = Number(tok);
+          if (!Number.isFinite(num) || num <= 0) {
+            return { values: [], error: `"${tok}" must be a positive number.` };
+          }
+          parsed.push(Math.round(num * 100) / 100);
+        }
+        const uniqueSorted = Array.from(new Set(parsed)).sort((a, b) => b - a);
+        return { values: uniqueSorted, error: null };
+      }
+
+      function evaluateAmountShade(amount) {
+        const numeric = Number(amount) || 0;
+        if (!limitSettings.enabled || numeric <= 0) {
+          return { shade: 'none', matchedLimit: null };
+        }
+
+        const tiers = [
+          { shade: 'red', limits: limitSettings.lightRedLimits || [] },
+          { shade: 'orange', limits: limitSettings.lightOrangeLimits || [] },
+          { shade: 'yellow', limits: limitSettings.lightYellowLimits || [] },
+          { shade: 'green', limits: limitSettings.lightGreenLimits || [] },
+        ];
+
+        for (const tier of tiers) {
+          if (!tier.limits.length) continue;
+          const sortedDesc = [...tier.limits].sort((a, b) => b - a);
+          const minTierLimit = sortedDesc[sortedDesc.length - 1];
+          if (numeric >= minTierLimit) {
+            const matched = sortedDesc.find((lim) => numeric >= lim) ?? minTierLimit;
+            return { shade: tier.shade, matchedLimit: matched };
+          }
+        }
+
+        return { shade: 'none', matchedLimit: null };
+      }
+
+      function renderLimitChips() {
+        const renderGroup = (container, values, badgeCls) => {
+          if (!container) return;
+          if (!values || values.length === 0) {
+            container.innerHTML = `<span class="text-[11px] text-slate-400 italic">No limits configured</span>`;
+            return;
+          }
+          container.innerHTML = [...values]
+            .sort((a, b) => b - a)
+            .map(
+              (val) =>
+                `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums ${badgeCls}">≥ ${escapeHtml(
+                  formatCurrency(val)
+                )}</span>`
+            )
+            .join('');
+        };
+
+        renderGroup(
+          dom.lightRedChips,
+          limitSettings.lightRedLimits,
+          'bg-rose-100 text-rose-900 border border-rose-300'
+        );
+        renderGroup(
+          dom.lightOrangeChips,
+          limitSettings.lightOrangeLimits,
+          'bg-orange-100 text-orange-900 border border-orange-300'
+        );
+        renderGroup(
+          dom.lightYellowChips,
+          limitSettings.lightYellowLimits,
+          'bg-amber-100 text-amber-950 border border-amber-300'
+        );
+        renderGroup(
+          dom.lightGreenChips,
+          limitSettings.lightGreenLimits,
+          'bg-emerald-100 text-emerald-900 border border-emerald-300'
+        );
+
+        const allLimits = [
+          ...(limitSettings.lightRedLimits || []),
+          ...(limitSettings.lightOrangeLimits || []),
+          ...(limitSettings.lightYellowLimits || []),
+          ...(limitSettings.lightGreenLimits || []),
+        ];
+        if (dom.notColorChips) {
+          if (allLimits.length === 0) {
+            dom.notColorChips.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-white text-slate-700 border border-slate-300">All amounts (no active limits)</span>`;
+          } else {
+            const lowestLimit = Math.min(...allLimits);
+            dom.notColorChips.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-white text-slate-700 border border-slate-300 tabular-nums">&lt; ${escapeHtml(
+              formatCurrency(lowestLimit)
+            )} (Not Color)</span>`;
+          }
+        }
+      }
+
+      function syncLimitSettingsInputs() {
+        dom.limitHighlightEnabled.checked = Boolean(limitSettings.enabled);
+        dom.lightRedLimitsInput.value = (limitSettings.lightRedLimits || []).join(', ');
+        dom.lightOrangeLimitsInput.value = (limitSettings.lightOrangeLimits || []).join(', ');
+        dom.lightYellowLimitsInput.value = (limitSettings.lightYellowLimits || []).join(', ');
+        dom.lightGreenLimitsInput.value = (limitSettings.lightGreenLimits || []).join(', ');
+        dom.limitSettingsError.classList.add('hidden');
+        dom.limitSettingsError.textContent = '';
+        renderLimitChips();
+      }
+
+      /* ------------------ Storage & JSON Snapshot Persistence ------------------ */
+
+      function buildTrackerJsonSnapshot(eventReason = 'update') {
+        const dailySums = computeDailySums(entries);
+        const grandTotal = computeGrandTotal(entries);
+        return {
+          schemaVersion: '1.0',
+          event: eventReason,
+          savedAt: new Date().toISOString(),
+          currency: selectedCurrency,
+          totalEntries: entries.length,
+          grandTotal,
+          dailySums,
+          entries: entries.map((item) => ({
+            id: item.id,
+            date: item.date,
+            agentOrCompany: item.agentOrCompany,
+            billNo: item.billNo || '',
+            billAmt: Number(item.billAmt),
+            chequeNo: item.chequeNo,
+          })),
+        };
+      }
+
+      function saveEntriesToStorage(eventReason = 'update', skipRemoteSync = false) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+          const snapshot = buildTrackerJsonSnapshot(eventReason);
+          localStorage.setItem(JSON_SNAPSHOT_KEY, JSON.stringify(snapshot));
+          const timeLabel = new Date(snapshot.savedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+          dom.storageStatusText.textContent = `JSON Saved (${eventReason}) at ${timeLabel}`;
+        } catch (err) {
+          console.error('Storage write failed:', err);
+          dom.storageStatusText.textContent = 'Storage: Local storage unavailable';
+        }
+
+        if (!skipRemoteSync && sheetDbConfig.webhookUrl && sheetDbConfig.autoSync) {
+          syncEntriesToGoogleSheet(true);
+        }
+      }
+
+      function downloadJsonSnapshot() {
+        try {
+          const snapshot = buildTrackerJsonSnapshot('manual-export');
+          const jsonText = JSON.stringify(snapshot, null, 2);
+          const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          const todayStr = new Date().toISOString().slice(0, 10);
+          link.href = url;
+          link.download = `calendar-day-entries-${todayStr}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          showFeedback('Downloaded tracker data as JSON file.', 'success');
+        } catch (err) {
+          console.error('JSON download error:', err);
+          showFeedback('Failed to export JSON snapshot.', 'error');
+        }
+      }
+
+      function saveLimitSettingsToStorage() {
+        try {
+          localStorage.setItem(LIMIT_SETTINGS_KEY, JSON.stringify(limitSettings));
+        } catch (err) {
+          console.error('Limit settings save failed:', err);
+        }
+      }
+
+      function loadEntriesFromStorage() {
+        try {
+          const savedCurrency = localStorage.getItem(CURRENCY_KEY);
+          if (savedCurrency && CURRENCY_CONFIG[savedCurrency]) {
+            selectedCurrency = savedCurrency;
+          }
+          dom.currencySelect.value = selectedCurrency;
+
+          const savedLimitsRaw = localStorage.getItem(LIMIT_SETTINGS_KEY);
+          if (savedLimitsRaw) {
+            const parsedLimits = JSON.parse(savedLimitsRaw);
+            if (parsedLimits && typeof parsedLimits === 'object') {
+              limitSettings = {
+                enabled: parsedLimits.enabled !== undefined ? Boolean(parsedLimits.enabled) : true,
+                lightRedLimits: Array.isArray(parsedLimits.lightRedLimits)
+                  ? parsedLimits.lightRedLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+                  : [...DEFAULT_LIMIT_SETTINGS.lightRedLimits],
+                lightOrangeLimits: Array.isArray(parsedLimits.lightOrangeLimits)
+                  ? parsedLimits.lightOrangeLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+                  : [...DEFAULT_LIMIT_SETTINGS.lightOrangeLimits],
+                lightYellowLimits: Array.isArray(parsedLimits.lightYellowLimits)
+                  ? parsedLimits.lightYellowLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+                  : [...DEFAULT_LIMIT_SETTINGS.lightYellowLimits],
+                lightGreenLimits: Array.isArray(parsedLimits.lightGreenLimits)
+                  ? parsedLimits.lightGreenLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+                  : [...DEFAULT_LIMIT_SETTINGS.lightGreenLimits],
+              };
+            }
+          }
+
+          const rawEntries = localStorage.getItem(STORAGE_KEY);
+          if (rawEntries !== null) {
+            const parsed = JSON.parse(rawEntries);
+            if (Array.isArray(parsed)) {
+              entries = parsed.filter(
+                (item) =>
+                  item &&
+                  typeof item.date === 'string' &&
+                  typeof item.agentOrCompany === 'string' &&
+                  Number.isFinite(Number(item.billAmt))
+              );
+            } else {
+              entries = createSampleEntries();
+            }
+          } else {
+            entries = createSampleEntries();
+            saveEntriesToStorage('init-sample', true);
+          }
+        } catch (err) {
+          console.error('Failed to read localStorage:', err);
+          entries = createSampleEntries();
+        }
+      }
+
+      /* ------------------ Google Sheet DB Integration ------------------ */
+
+      function loadSheetDbConfig() {
+        try {
+          const raw = localStorage.getItem(SHEET_DB_CONFIG_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              sheetDbConfig = {
+                webhookUrl: String(parsed.webhookUrl || '').trim(),
+                autoSync: parsed.autoSync !== undefined ? Boolean(parsed.autoSync) : true,
+                lastSyncAt: String(parsed.lastSyncAt || ''),
+              };
+            }
+          }
+        } catch (_err) {
+          // Ignore storage read error
+        }
+        updateSheetDbStatusText();
+      }
+
+      function saveSheetDbConfig() {
+        try {
+          localStorage.setItem(SHEET_DB_CONFIG_KEY, JSON.stringify(sheetDbConfig));
+        } catch (_err) {
+          // Ignore storage write error
+        }
+      }
+
+      function updateSheetDbStatusText() {
+        if (!dom.sheetSyncStatusText) return;
+        if (!sheetDbConfig.webhookUrl) {
+          dom.sheetSyncStatusText.textContent = 'Sheet DB Status: Not connected (using local browser storage)';
+          return;
+        }
+        const syncSuffix = sheetDbConfig.lastSyncAt ? ` • Last synced: ${sheetDbConfig.lastSyncAt}` : '';
+        dom.sheetSyncStatusText.textContent = `Sheet DB Status: Connected (${
+          sheetDbConfig.autoSync ? 'Auto-sync ON' : 'Manual sync'
+        })${syncSuffix}`;
+      }
+
+      async function syncEntriesToGoogleSheet(isSilent = false) {
+        if (!sheetDbConfig.webhookUrl) {
+          if (!isSilent) {
+            showFeedback('Configure a Google Apps Script Web App URL in Google Sheet DB first.', 'warning');
+          }
+          return;
+        }
+
+        try {
+          if (!isSilent) {
+            dom.pushToSheetBtn.disabled = true;
+            dom.pushToSheetBtn.textContent = 'Pushing...';
+          }
+
+          const payload = {
+            action: 'sync',
+            entries,
+            dailySums: computeDailySums(entries),
+            grandTotal: computeGrandTotal(entries),
+          };
+
+          const response = await fetch(sheetDbConfig.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          sheetDbConfig.lastSyncAt = new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+          saveSheetDbConfig();
+          updateSheetDbStatusText();
+
+          if (!isSilent) {
+            showFeedback('Pushed entries & daily sums to Google Sheet database.', 'success');
+          }
+        } catch (err) {
+          console.error('Google Sheet push failed:', err);
+          if (!isSilent) {
+            showFeedback(`Google Sheet sync error: ${err.message}`, 'error');
+          }
+        } finally {
+          if (!isSilent) {
+            dom.pushToSheetBtn.disabled = false;
+            dom.pushToSheetBtn.textContent = 'Push to Sheet';
+          }
+        }
+      }
+
+      async function pullEntriesFromGoogleSheet() {
+        if (!sheetDbConfig.webhookUrl) {
+          showFeedback('Enter and save a Google Apps Script Web App URL first.', 'warning');
+          return;
+        }
+
+        try {
+          dom.pullFromSheetBtn.disabled = true;
+          dom.pullFromSheetBtn.textContent = 'Pulling...';
+
+          const sep = sheetDbConfig.webhookUrl.includes('?') ? '&' : '?';
+          const response = await fetch(`${sheetDbConfig.webhookUrl}${sep}format=json`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const data = await response.json();
+          if (!data || !Array.isArray(data.entries)) {
+            throw new Error('Invalid JSON response from Google Sheet Web App.');
+          }
+
+          entries = data.entries.map((item, idx) => ({
+            id: String(item.id || generateId() + '_' + idx),
+            date: String(item.date || ''),
+            agentOrCompany: String(item.agentOrCompany || ''),
+            billAmt: Number(item.billAmt) || 0,
+            chequeNo: String(item.chequeNo || ''),
+          }));
+
+          sheetDbConfig.lastSyncAt = new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+          saveSheetDbConfig();
+          saveEntriesToStorage('pull-from-sheet', true);
+          updateSheetDbStatusText();
+          renderAll();
+          showFeedback(`Pulled ${entries.length} entries from Google Sheet database.`, 'success');
+        } catch (err) {
+          console.error('Google Sheet pull failed:', err);
+          showFeedback(`Failed to pull from Google Sheet: ${err.message}`, 'error');
+        } finally {
+          dom.pullFromSheetBtn.disabled = false;
+          dom.pullFromSheetBtn.textContent = 'Pull from Sheet';
+        }
+      }
+
+      /* ------------------ Feedback Banner Helpers ------------------ */
+
+      function hideFeedback() {
+        if (bannerTimeout) {
+          clearTimeout(bannerTimeout);
+          bannerTimeout = null;
+        }
+        pendingConfirmAction = null;
+        dom.confirmActionBtn.classList.add('hidden');
+        dom.feedbackBanner.classList.add('hidden');
+      }
+
+      function showFeedback(message, type = 'info', confirmLabel = '', onConfirm = null) {
+        if (bannerTimeout) {
+          clearTimeout(bannerTimeout);
+          bannerTimeout = null;
+        }
+
+        const styleMap = {
+          success: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+          warning: 'bg-amber-50 border-amber-200 text-amber-950',
+          error: 'bg-rose-50 border-rose-200 text-rose-900',
+          info: 'bg-indigo-50 border-indigo-200 text-indigo-900',
+        };
+
+        dom.feedbackBanner.className = `rounded-2xl border px-4 py-3 flex items-center justify-between gap-3 text-xs sm:text-sm font-medium ${
+          styleMap[type] || styleMap.info
+        }`;
+        dom.feedbackText.textContent = message;
+
+        if (confirmLabel && typeof onConfirm === 'function') {
+          pendingConfirmAction = onConfirm;
+          dom.confirmActionBtn.textContent = confirmLabel;
+          dom.confirmActionBtn.classList.remove('hidden');
+        } else {
+          pendingConfirmAction = null;
+          dom.confirmActionBtn.classList.add('hidden');
+          bannerTimeout = setTimeout(hideFeedback, 5000);
+        }
+      }
+
+      /* ------------------ Form Validation & Modal Actions ------------------ */
+
+      function clearValidationErrors() {
+        [
+          [dom.entryDate, dom.dateError],
+          [dom.agentCompany, dom.agentError],
+          [dom.billAmt, dom.amtError],
+          [dom.chequeNo, dom.chequeError],
+        ].forEach(([inputEl, errorEl]) => {
+          if (inputEl) inputEl.classList.remove('border-rose-500');
+          if (errorEl) {
+            errorEl.textContent = '';
+            errorEl.classList.add('hidden');
+          }
+        });
+      }
+
+      function setFieldError(inputEl, errorEl, message) {
+        if (inputEl) inputEl.classList.add('border-rose-500');
+        if (errorEl) {
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+      }
+
+      function validateForm() {
+        clearValidationErrors();
+        let isValid = true;
+
+        const dateVal = dom.entryDate.value.trim();
+        const agentVal = dom.agentCompany.value.trim();
+        const billNoVal = dom.billNo ? dom.billNo.value.trim() : '';
+        const amtRaw = dom.billAmt.value.trim();
+        const amtVal = Number(amtRaw);
+        const chequeVal = dom.chequeNo.value.trim();
+
+        if (!dateVal || !/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+          setFieldError(dom.entryDate, dom.dateError, 'Please select a valid calendar date.');
+          isValid = false;
+        }
+        if (!agentVal) {
+          setFieldError(dom.agentCompany, dom.agentError, 'Agent and Company Name is required.');
+          isValid = false;
+        }
+        if (!amtRaw || !Number.isFinite(amtVal) || amtVal <= 0) {
+          setFieldError(dom.billAmt, dom.amtError, 'Enter a valid Bill Amt greater than 0.');
+          isValid = false;
+        }
+        if (!chequeVal) {
+          setFieldError(dom.chequeNo, dom.chequeError, 'Cheque No is required.');
+          isValid = false;
+        }
+
+        if (!isValid) return null;
+
+        return {
+          date: dateVal,
+          agentOrCompany: agentVal,
+          billNo: billNoVal,
+          billAmt: Math.round(amtVal * 100) / 100,
+          chequeNo: chequeVal,
+        };
+      }
+
+      function openEntryFormModal(prefillDate = '') {
+        clearValidationErrors();
+        if (!dom.editingId.value.trim()) {
+          dom.entryForm.reset();
+          dom.entryDate.value =
+            prefillDate && /^\d{4}-\d{2}-\d{2}$/.test(prefillDate)
+              ? prefillDate
+              : getLocalIsoDateOffset(0);
+          dom.formModeBadge.textContent = 'New Entry';
+          dom.formModeBadge.className =
+            'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200';
+          dom.formTitleText.textContent = 'Add Calendar Day Entry';
+          dom.submitBtnText.textContent = 'Add Entry';
+        }
+        dom.entryFormModal.classList.remove('hidden');
+        dom.entryFormModal.classList.add('flex');
+        dom.agentCompany.focus();
+      }
+
+      function closeEntryFormModal() {
+        dom.entryFormModal.classList.add('hidden');
+        dom.entryFormModal.classList.remove('flex');
+      }
+
+      function startEditEntry(id) {
+        const target = entries.find((e) => e.id === id);
+        if (!target) {
+          showFeedback('Entry could not be found for editing.', 'error');
+          return;
+        }
+
+        clearValidationErrors();
+        dom.editingId.value = target.id;
+        dom.entryDate.value = target.date;
+        dom.agentCompany.value = target.agentOrCompany;
+        if (dom.billNo) dom.billNo.value = target.billNo || '';
+        dom.billAmt.value = String(target.billAmt);
+        dom.chequeNo.value = target.chequeNo;
+
+        dom.formModeBadge.textContent = 'Editing';
+        dom.formModeBadge.className =
+          'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200';
+        dom.formTitleText.textContent = 'Update Calendar Day Entry';
+        dom.submitBtnText.textContent = 'Update Entry';
+
+        renderAll();
+        dom.entryFormModal.classList.remove('hidden');
+        dom.entryFormModal.classList.add('flex');
+        dom.agentCompany.focus();
+      }
+
+      function resetFormToAddMode(keepDate = false) {
+        const preservedDate = keepDate && dom.entryDate.value ? dom.entryDate.value : getLocalIsoDateOffset(0);
+        clearValidationErrors();
+        dom.editingId.value = '';
+        dom.entryForm.reset();
+        dom.entryDate.value = preservedDate;
+
+        dom.formModeBadge.textContent = 'New Entry';
+        dom.formModeBadge.className =
+          'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200';
+        dom.formTitleText.textContent = 'Add Calendar Day Entry';
+        dom.submitBtnText.textContent = 'Add Entry';
+        closeEntryFormModal();
+        renderAll();
+      }
+
+      function deleteEntry(id) {
+        const idx = entries.findIndex((e) => e.id === id);
+        if (idx === -1) return;
+
+        const removed = entries[idx];
+        entries.splice(idx, 1);
+
+        if (dom.editingId.value === id) {
+          resetFormToAddMode(true);
+        }
+
+        saveEntriesToStorage('delete');
+        renderAll();
+        showFeedback(
+          `Deleted entry "${removed.agentOrCompany}" (${formatCurrency(removed.billAmt)}) on ${removed.date} and saved JSON.`,
+          'info'
+        );
+      }
+
+      function openDeleteWarningModal(id) {
+        const target = entries.find((e) => e.id === id);
+        if (!target) {
+          showFeedback('Entry could not be found.', 'error');
+          return;
+        }
+
+        pendingDeleteEntryId = target.id;
+        dom.deleteModalAgent.textContent = target.agentOrCompany || '—';
+        dom.deleteModalAgent.title = target.agentOrCompany || '';
+        dom.deleteModalDate.textContent = target.date || '—';
+        dom.deleteModalCheque.textContent = target.chequeNo || '—';
+        dom.deleteModalAmt.textContent = formatCurrency(target.billAmt);
+
+        dom.deleteWarningModal.classList.remove('hidden');
+        dom.deleteWarningModal.classList.add('flex');
+        dom.cancelDeleteModalBtn.focus();
+      }
+
+      function closeDeleteWarningModal() {
+        pendingDeleteEntryId = null;
+        dom.deleteWarningModal.classList.add('hidden');
+        dom.deleteWarningModal.classList.remove('flex');
+      }
+
+      function openEntryDetailsModal(id) {
+        const target = entries.find((e) => e.id === id);
+        if (!target) {
+          showFeedback('Entry details could not be found.', 'error');
+          return;
+        }
+
+        activeDetailEntryId = target.id;
+        dom.detailModalAgent.textContent = target.agentOrCompany || '—';
+        dom.detailModalDate.textContent = target.date || '—';
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(target.date)) {
+          const dt = parseLocalIsoDate(target.date);
+          dom.detailModalWeekday.textContent = dt.toLocaleDateString('en-GB', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          });
+        } else {
+          dom.detailModalWeekday.textContent = '';
+        }
+        dom.detailModalBillNo.textContent = target.billNo ? `Bill: ${target.billNo}` : 'Bill No: —';
+        dom.detailModalCheque.textContent = target.chequeNo || '—';
+        dom.detailModalAmt.textContent = formatCurrency(target.billAmt);
+
+        const shadeInfo = evaluateAmountShade(target.billAmt);
+        const shadeBadgeMap = {
+          red: {
+            label: `Light Red (≥ ${formatCurrency(shadeInfo.matchedLimit)})`,
+            cls: 'bg-rose-100 text-rose-900 border border-rose-300',
+          },
+          orange: {
+            label: `Light Orange (≥ ${formatCurrency(shadeInfo.matchedLimit)})`,
+            cls: 'bg-orange-100 text-orange-900 border border-orange-300',
+          },
+          yellow: {
+            label: `Light Yellow (≥ ${formatCurrency(shadeInfo.matchedLimit)})`,
+            cls: 'bg-amber-100 text-amber-950 border border-amber-300',
+          },
+          green: {
+            label: `Light Green (≥ ${formatCurrency(shadeInfo.matchedLimit)})`,
+            cls: 'bg-emerald-100 text-emerald-900 border border-emerald-300',
+          },
+        };
+
+        if (shadeBadgeMap[shadeInfo.shade]) {
+          dom.detailModalShadeBadge.textContent = shadeBadgeMap[shadeInfo.shade].label;
+          dom.detailModalShadeBadge.className = `mt-1 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tabular-nums ${
+            shadeBadgeMap[shadeInfo.shade].cls
+          }`;
+        } else {
+          dom.detailModalShadeBadge.className = 'hidden';
+          dom.detailModalShadeBadge.textContent = '';
+        }
+
+        const sameDayEntries = entries.filter((e) => e && e.date === target.date);
+        const sameDayTotal = computeGrandTotal(sameDayEntries);
+        dom.detailModalDayCount.textContent = `${sameDayEntries.length} ${
+          sameDayEntries.length === 1 ? 'entry' : 'entries'
+        }`;
+        dom.detailModalDaySum.textContent = formatCurrency(sameDayTotal);
+
+        dom.entryDetailsModal.classList.remove('hidden');
+        dom.entryDetailsModal.classList.add('flex');
+        dom.closeEntryDetailsBtn.focus();
+      }
+
+      function closeEntryDetailsModal() {
+        activeDetailEntryId = null;
+        dom.entryDetailsModal.classList.add('hidden');
+        dom.entryDetailsModal.classList.remove('flex');
+      }
+
+      /* ------------------ Filtering & Rendering ------------------ */
+
+      function getFilteredEntries() {
+        const q = searchQuery.trim().toLowerCase();
+        return entries
+          .filter((item) => {
+            if (filterDate && item.date !== filterDate) return false;
+            if (!q) return true;
+            return (
+              item.date.toLowerCase().includes(q) ||
+              item.agentOrCompany.toLowerCase().includes(q) ||
+              item.chequeNo.toLowerCase().includes(q) ||
+              String(item.billAmt).includes(q)
+            );
+          })
+          .sort((a, b) => b.date.localeCompare(a.date));
+      }
+
+      function renderKPIs() {
+        const dailySums = computeDailySums(entries);
+        const grandTotal = computeGrandTotal(entries);
+        const activeDays = dailySums.length;
+        const totalEntriesCount = entries.length;
+        const dailyAvg = activeDays > 0 ? grandTotal / activeDays : 0;
+
+        dom.kpiGrandTotal.textContent = formatCurrency(grandTotal);
+        dom.kpiGrandTotalSub.textContent =
+          totalEntriesCount === 1 ? 'Across 1 entry' : `Across ${totalEntriesCount} entries`;
+        dom.kpiActiveDays.textContent = String(activeDays);
+        dom.kpiTotalEntries.textContent = String(totalEntriesCount);
+        dom.kpiDailyAvgAmt.textContent = formatCurrency(dailyAvg);
+
+        if (dailySums.length > 0) {
+          const highestDay = dailySums.reduce((max, cur) => (cur.amt > max.amt ? cur : max), dailySums[0]);
+          dom.kpiHighestDayDate.textContent = `Peak: ${highestDay.date} (${formatCurrency(highestDay.amt)})`;
+        } else {
+          dom.kpiHighestDayDate.textContent = 'No date recorded';
+        }
+      }
+
+      function renderDailySumTable() {
+        const dailySums = computeDailySums(entries);
+        const grandTotal = computeGrandTotal(entries);
+
+        dom.dailySumBadge.textContent = `${dailySums.length} ${dailySums.length === 1 ? 'Day' : 'Days'}`;
+        dom.dailySumFootCount.textContent = `(${entries.length} ${entries.length === 1 ? 'entry' : 'entries'})`;
+        dom.dailySumGrandTotal.textContent = formatCurrency(grandTotal);
+        dom.clearDateFilterLink.classList.toggle('hidden', !filterDate);
+
+        if (dailySums.length === 0) {
+          dom.dailySumTableBody.innerHTML = `
+            <tr>
+              <td colspan="2" class="py-8 px-4 text-center text-xs text-slate-400">
+                No calendar day entries logged yet. Click <strong>New Entry</strong> to add one.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        const shadeRowClass = {
+          red: 'bg-rose-50/90 hover:bg-rose-100/80',
+          orange: 'bg-orange-50/90 hover:bg-orange-100/80',
+          yellow: 'bg-amber-50/90 hover:bg-amber-100/80',
+          green: 'bg-emerald-50/90 hover:bg-emerald-100/80',
+          none: 'hover:bg-indigo-50/50',
+        };
+
+        const shadeAmtClass = {
+          red: 'text-rose-900',
+          orange: 'text-orange-900',
+          yellow: 'text-amber-950',
+          green: 'text-emerald-900',
+          none: 'text-slate-900',
+        };
+
+        dom.dailySumTableBody.innerHTML = dailySums
+          .map((row) => {
+            const isSelected = filterDate === row.date;
+            const shadeInfo = evaluateAmountShade(row.amt);
+            const baseBg = isSelected
+              ? 'bg-indigo-100/80 ring-1 ring-inset ring-indigo-300'
+              : shadeRowClass[shadeInfo.shade] || shadeRowClass.none;
+            const amtColor = shadeAmtClass[shadeInfo.shade] || shadeAmtClass.none;
+
+            return `
+              <tr
+                data-sum-date="${escapeHtml(row.date)}"
+                class="cursor-pointer transition ${baseBg}"
+                title="Click to filter by ${escapeHtml(row.date)}"
+              >
+                <td class="py-3 px-4">
+                  <div class="font-semibold text-slate-900 tabular-nums">${escapeHtml(row.date)}</div>
+                  <div class="text-[11px] text-slate-500">${row.count} ${
+                    row.count === 1 ? 'entry' : 'entries'
+                  }</div>
+                </td>
+                <td class="py-3 px-4 text-right font-bold tabular-nums ${amtColor}">
+                  ${escapeHtml(formatCurrency(row.amt))}
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+      }
+
+      function renderThirtyDayCardView() {
+        if (!windowStartDate || !/^\d{4}-\d{2}-\d{2}$/.test(windowStartDate)) {
+          windowStartDate = getDefault30DayStartDate();
+        }
+        dom.windowStartDateInput.value = windowStartDate;
+
+        const windowEndDate = addDaysToIsoDate(windowStartDate, 29);
+        dom.windowRangeBadge.textContent = `${formatShortDate(windowStartDate)} – ${formatShortDate(windowEndDate)}`;
+
+        // Toggle filter button active styles
+        if (cardFilterMode === 'all') {
+          dom.filterAll30DaysBtn.className =
+            'px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs transition cursor-pointer';
+          dom.filterActiveDaysOnlyBtn.className =
+            'px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer';
+        } else {
+          dom.filterAll30DaysBtn.className =
+            'px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer';
+          dom.filterActiveDaysOnlyBtn.className =
+            'px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs transition cursor-pointer';
+        }
+
+        const q = searchQuery.trim().toLowerCase();
+        const todayIso = getLocalIsoDateOffset(0);
+
+        const daysList = [];
+        let windowTotalAmt = 0;
+        let activeDaysInWindow = 0;
+        let totalEntriesInWindow = 0;
+
+        for (let i = 0; i < 30; i++) {
+          const dateIso = addDaysToIsoDate(windowStartDate, i);
+          const dayEntries = entries.filter((item) => {
+            if (!item || item.date !== dateIso) return false;
+            if (!q) return true;
+            return (
+              item.date.toLowerCase().includes(q) ||
+              item.agentOrCompany.toLowerCase().includes(q) ||
+              item.chequeNo.toLowerCase().includes(q) ||
+              String(item.billAmt).includes(q)
+            );
+          });
+
+          const dayTotal = computeGrandTotal(dayEntries);
+          if (dayEntries.length > 0) {
+            activeDaysInWindow += 1;
+            totalEntriesInWindow += dayEntries.length;
+            windowTotalAmt = Math.round((windowTotalAmt + dayTotal) * 100) / 100;
+          }
+
+          daysList.push({
+            dayNumber: i + 1,
+            date: dateIso,
+            entries: dayEntries,
+            totalAmt: dayTotal,
+            isToday: dateIso === todayIso,
+          });
+        }
+
+        dom.window30TotalAmt.textContent = formatCurrency(windowTotalAmt);
+        dom.window30StatsText.textContent = `${activeDaysInWindow} active ${
+          activeDaysInWindow === 1 ? 'day' : 'days'
+        } • ${totalEntriesInWindow} ${totalEntriesInWindow === 1 ? 'entry' : 'entries'}`;
+
+        const visibleDays =
+          cardFilterMode === 'active' ? daysList.filter((d) => d.entries.length > 0) : daysList;
+
+        if (visibleDays.length === 0) {
+          dom.thirtyDayCardsGrid.innerHTML = `
+            <div class="col-span-full bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center space-y-2">
+              <p class="text-sm font-semibold text-slate-700">No active days found in this 30-day window</p>
+              <p class="text-xs text-slate-500">Switch to "All 30 Days" or navigate to another 30-day range.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const cardShadeStyles = {
+          red: {
+            card: 'bg-rose-50/75 border-rose-300',
+            header: 'bg-rose-100/70 border-rose-200',
+            total: 'text-rose-900',
+          },
+          orange: {
+            card: 'bg-orange-50/75 border-orange-300',
+            header: 'bg-orange-100/70 border-orange-200',
+            total: 'text-orange-900',
+          },
+          yellow: {
+            card: 'bg-amber-50/75 border-amber-300',
+            header: 'bg-amber-100/70 border-amber-200',
+            total: 'text-amber-950',
+          },
+          green: {
+            card: 'bg-emerald-50/75 border-emerald-300',
+            header: 'bg-emerald-100/70 border-emerald-200',
+            total: 'text-emerald-900',
+          },
+          none: {
+            card: 'bg-white border-slate-200',
+            header: 'bg-slate-50/80 border-slate-100',
+            total: 'text-slate-900',
+          },
+        };
+
+        dom.thirtyDayCardsGrid.innerHTML = visibleDays
+          .map((day) => {
+            const dt = parseLocalIsoDate(day.date);
+            const weekdayStr = dt.toLocaleDateString('en-GB', { weekday: 'short' });
+            const shadeInfo = evaluateAmountShade(day.totalAmt);
+            const styleSet = cardShadeStyles[shadeInfo.shade] || cardShadeStyles.none;
+            const todayRing = day.isToday ? 'ring-2 ring-indigo-500/40' : '';
+
+            const entriesHtml =
+              day.entries.length === 0
+                ? `<div class="py-5 text-center text-xs text-slate-400">No entries logged</div>`
+                : `<ul class="divide-y divide-slate-200/70 max-h-44 overflow-y-auto">
+                    ${day.entries
+                      .map(
+                        (item) => `
+                        <li
+                          data-entry-detail-id="${escapeHtml(item.id)}"
+                          class="py-2 px-2 -mx-2 rounded-lg hover:bg-black/[0.04] cursor-pointer flex items-center justify-between gap-2 group transition"
+                          title="Click to view entry details"
+                        >
+                          <div class="min-w-0 flex-1">
+                            <p class="text-xs font-semibold text-slate-800 truncate">${escapeHtml(
+                              item.agentOrCompany
+                            )}</p>
+                            <p class="text-[11px] font-mono text-slate-500 truncate">${escapeHtml(
+                              item.chequeNo
+                            )}</p>
+                          </div>
+                          <div class="flex items-center gap-1.5 shrink-0">
+                            <span class="text-xs font-bold text-slate-900 tabular-nums">${escapeHtml(
+                              formatCurrency(item.billAmt)
+                            )}</span>
+                            <button
+                              type="button"
+                              data-action="edit"
+                              data-id="${escapeHtml(item.id)}"
+                              aria-label="Edit entry"
+                              class="p-1 rounded text-slate-400 hover:text-indigo-700 hover:bg-indigo-50 transition cursor-pointer"
+                              title="Edit"
+                            >
+                              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              data-action="delete"
+                              data-id="${escapeHtml(item.id)}"
+                              aria-label="Delete entry"
+                              class="p-1 rounded text-slate-400 hover:text-rose-700 hover:bg-rose-50 transition cursor-pointer"
+                              title="Delete"
+                            >
+                              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </li>
+                      `
+                      )
+                      .join('')}
+                  </ul>`;
+
+            return `
+              <article class="rounded-2xl border shadow-2xs overflow-hidden flex flex-col justify-between transition ${styleSet.card} ${todayRing}">
+                <div>
+                  <div class="px-3.5 py-2.5 border-b flex items-center justify-between gap-2 ${styleSet.header}">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900 text-white tabular-nums shrink-0">
+                        Day ${day.dayNumber}
+                      </span>
+                      <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-900 tabular-nums truncate">
+                          ${escapeHtml(day.date)}
+                          ${
+                            day.isToday
+                              ? '<span class="ml-1 text-[10px] font-bold text-indigo-700">(Today)</span>'
+                              : ''
+                          }
+                        </div>
+                        <div class="text-[10px] text-slate-500">${escapeHtml(weekdayStr)}</div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      data-quick-add-date="${escapeHtml(day.date)}"
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-[11px] font-semibold text-indigo-700 transition cursor-pointer shrink-0"
+                      title="Add entry on ${escapeHtml(day.date)}"
+                    >
+                      <span>+ Add</span>
+                    </button>
+                  </div>
+
+                  <div class="px-3.5 py-2.5">
+                    ${entriesHtml}
+                  </div>
+                </div>
+
+                <div class="px-3.5 py-2.5 bg-white/75 border-t border-slate-200/70 flex items-center justify-between gap-2">
+                  <span class="text-[11px] font-semibold text-slate-500">
+                    Day Total (${day.entries.length})
+                  </span>
+                  <span class="text-sm font-bold tabular-nums ${styleSet.total}">
+                    ${escapeHtml(formatCurrency(day.totalAmt))}
+                  </span>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+      }
+
+      function renderEntriesTable() {
+        const filtered = getFilteredEntries();
+        const filteredTotal = computeGrandTotal(filtered);
+
+        dom.filteredCountBadge.textContent = `${filtered.length} ${
+          filtered.length === 1 ? 'entry' : 'entries'
+        }`;
+        dom.filteredSummaryText.textContent = `Showing ${filtered.length} of ${entries.length} total entries`;
+        dom.filteredTotalAmt.textContent = formatCurrency(filteredTotal);
+
+        if (filtered.length === 0) {
+          dom.entriesTableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-10 px-4 text-center text-xs sm:text-sm text-slate-400">
+                No entries match the current filters.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        const rowShadeMap = {
+          red: 'bg-rose-50/80 hover:bg-rose-100/75',
+          orange: 'bg-orange-50/80 hover:bg-orange-100/75',
+          yellow: 'bg-amber-50/80 hover:bg-amber-100/75',
+          green: 'bg-emerald-50/80 hover:bg-emerald-100/75',
+          none: 'hover:bg-slate-50',
+        };
+
+        dom.entriesTableBody.innerHTML = filtered
+          .map((item) => {
+            const shadeInfo = evaluateAmountShade(item.billAmt);
+            const rowBg = rowShadeMap[shadeInfo.shade] || rowShadeMap.none;
+
+            return `
+              <tr
+                data-entry-detail-id="${escapeHtml(item.id)}"
+                class="cursor-pointer transition ${rowBg}"
+                title="Click to view entry details"
+              >
+                <td class="py-3 px-4 font-semibold text-slate-800 tabular-nums whitespace-nowrap">
+                  ${escapeHtml(item.date)}
+                </td>
+                <td class="py-3 px-4 font-medium text-slate-900">
+                  ${escapeHtml(item.agentOrCompany)}
+                </td>
+                <td class="py-3 px-4 text-right font-bold text-slate-900 tabular-nums whitespace-nowrap">
+                  ${escapeHtml(formatCurrency(item.billAmt))}
+                </td>
+                <td class="py-3 px-4 font-mono text-xs font-semibold text-slate-700 whitespace-nowrap">
+                  ${escapeHtml(item.chequeNo)}
+                </td>
+                <td class="py-3 px-4 text-right whitespace-nowrap">
+                  <div class="inline-flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      data-action="edit"
+                      data-id="${escapeHtml(item.id)}"
+                      class="px-2.5 py-1 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-xs font-semibold text-indigo-700 transition cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      data-action="delete"
+                      data-id="${escapeHtml(item.id)}"
+                      class="px-2.5 py-1 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-xs font-semibold text-rose-700 transition cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+      }
+
+      function renderAll() {
+        // Update view switcher tabs
+        if (activeViewMode === 'cards') {
+          dom.tabCardViewBtn.className =
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-2xs transition cursor-pointer';
+          dom.tabCardViewBtn.setAttribute('aria-selected', 'true');
+          dom.tabTableViewBtn.className =
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer';
+          dom.tabTableViewBtn.setAttribute('aria-selected', 'false');
+          dom.cardViewSection.classList.remove('hidden');
+          dom.tableViewSection.classList.add('hidden');
+        } else {
+          dom.tabTableViewBtn.className =
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-2xs transition cursor-pointer';
+          dom.tabTableViewBtn.setAttribute('aria-selected', 'true');
+          dom.tabCardViewBtn.className =
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer';
+          dom.tabCardViewBtn.setAttribute('aria-selected', 'false');
+          dom.tableViewSection.classList.remove('hidden');
+          dom.cardViewSection.classList.add('hidden');
+        }
+
+        // Toggle Daily Sum panel layout
+        if (showDailySumPanel) {
+          dom.dailySumSection.classList.remove('hidden');
+          dom.toggleDailySumText.textContent = 'Hide Daily Sum Table';
+          dom.cardViewSection.classList.remove('lg:col-span-12');
+          dom.cardViewSection.classList.add('lg:col-span-8');
+          dom.tableViewSection.classList.remove('lg:col-span-12');
+          dom.tableViewSection.classList.add('lg:col-span-8');
+        } else {
+          dom.dailySumSection.classList.add('hidden');
+          dom.toggleDailySumText.textContent = 'Show Daily Sum Table';
+          dom.cardViewSection.classList.remove('lg:col-span-8');
+          dom.cardViewSection.classList.add('lg:col-span-12');
+          dom.tableViewSection.classList.remove('lg:col-span-8');
+          dom.tableViewSection.classList.add('lg:col-span-12');
+        }
+
+        renderKPIs();
+        renderDailySumTable();
+        renderThirtyDayCardView();
+        renderEntriesTable();
+      }
+
+      /* ------------------ CSV Export ------------------ */
+
+      function csvCell(val) {
+        const str = String(val ?? '');
+        const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+        return `"${safe.replace(/"/g, '""')}"`;
+      }
+
+      function exportToCsv() {
+        if (entries.length === 0) {
+          showFeedback('No entries available to export.', 'warning');
+          return;
+        }
+
+        try {
+          const sortedEntries = [...entries].sort((a, b) => b.date.localeCompare(a.date));
+          const dailySums = computeDailySums(entries);
+          const grandTotal = computeGrandTotal(entries);
+
+          const lines = [];
+          lines.push(['Date', 'Agent or Company Name', 'Bill Amt', 'Cheque No.'].map(csvCell).join(','));
+          for (const item of sortedEntries) {
+            lines.push(
+              [item.date, item.agentOrCompany, Number(item.billAmt).toFixed(2), item.chequeNo]
+                .map(csvCell)
+                .join(',')
+            );
+          }
+
+          lines.push('');
+          lines.push(['Daily Sum Total', ''].map(csvCell).join(','));
+          lines.push(['Date', 'Amt'].map(csvCell).join(','));
+          for (const row of dailySums) {
+            lines.push([row.date, Number(row.amt).toFixed(2)].map(csvCell).join(','));
+          }
+          lines.push(['Grand Total', Number(grandTotal).toFixed(2)].map(csvCell).join(','));
+
+          const csvContent = lines.join('\r\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          const todayStr = new Date().toISOString().slice(0, 10);
+          link.href = url;
+          link.download = `calendar-day-entries-${todayStr}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+          showFeedback('Exported entries and daily sum totals to CSV.', 'success');
+        } catch (err) {
+          console.error('CSV export error:', err);
+          showFeedback('Failed to generate CSV file.', 'error');
+        }
+      }
+
+      /* ------------------ Event Listeners ------------------ */
+
+      function bindEvents() {
+        // Open / Close New Entry popup modal
+        dom.openNewEntryModalBtn.addEventListener('click', () => {
+          resetFormToAddMode(false);
+          openEntryFormModal();
+        });
+
+        dom.workspaceNewEntryBtn.addEventListener('click', () => {
+          resetFormToAddMode(false);
+          openEntryFormModal();
+        });
+
+        dom.closeEntryFormModalXBtn.addEventListener('click', () => {
+          resetFormToAddMode(true);
+        });
+
+        dom.entryFormModal.addEventListener('click', (event) => {
+          if (event.target === dom.entryFormModal) {
+            resetFormToAddMode(true);
+          }
+        });
+
+        // Google Sheet DB panel toggle & actions
+        dom.openSheetDbBtn.addEventListener('click', () => {
+          showSheetDbPanel = !showSheetDbPanel;
+          dom.sheetDbPanel.classList.toggle('hidden', !showSheetDbPanel);
+          dom.openSheetDbBtn.setAttribute('aria-expanded', String(showSheetDbPanel));
+          if (showSheetDbPanel) {
+            dom.sheetWebhookUrlInput.value = sheetDbConfig.webhookUrl;
+            dom.sheetAutoSyncEnabled.checked = Boolean(sheetDbConfig.autoSync);
+            dom.sheetDbError.classList.add('hidden');
+          }
+        });
+
+        dom.closeSheetDbBtn.addEventListener('click', () => {
+          showSheetDbPanel = false;
+          dom.sheetDbPanel.classList.add('hidden');
+          dom.openSheetDbBtn.setAttribute('aria-expanded', 'false');
+        });
+
+        dom.sheetAutoSyncEnabled.addEventListener('change', (event) => {
+          sheetDbConfig.autoSync = Boolean(event.target.checked);
+          saveSheetDbConfig();
+          updateSheetDbStatusText();
+        });
+
+        dom.saveSheetUrlBtn.addEventListener('click', () => {
+          const rawUrl = dom.sheetWebhookUrlInput.value.trim();
+          if (rawUrl && !/^https?:\/\//i.test(rawUrl)) {
+            dom.sheetDbError.textContent = 'Please enter a valid http:// or https:// Web App URL.';
+            dom.sheetDbError.classList.remove('hidden');
+            return;
+          }
+          dom.sheetDbError.classList.add('hidden');
+          dom.sheetDbError.textContent = '';
+          sheetDbConfig.webhookUrl = rawUrl;
+          sheetDbConfig.autoSync = Boolean(dom.sheetAutoSyncEnabled.checked);
+          saveSheetDbConfig();
+          updateSheetDbStatusText();
+          showFeedback(
+            rawUrl ? 'Saved Google Sheet Web App URL.' : 'Cleared Google Sheet Web App URL.',
+            'success'
+          );
+        });
+
+        dom.pushToSheetBtn.addEventListener('click', () => {
+          syncEntriesToGoogleSheet(false);
+        });
+
+        dom.pullFromSheetBtn.addEventListener('click', () => {
+          pullEntriesFromGoogleSheet();
+        });
+
+        // Limit Color Highlight Settings panel toggle & actions
+        dom.openLimitSettingsBtn.addEventListener('click', () => {
+          showLimitSettingsPanel = !showLimitSettingsPanel;
+          dom.limitSettingsPanel.classList.toggle('hidden', !showLimitSettingsPanel);
+          dom.openLimitSettingsBtn.setAttribute('aria-expanded', String(showLimitSettingsPanel));
+          if (showLimitSettingsPanel) {
+            syncLimitSettingsInputs();
+          }
+        });
+
+        dom.closeLimitSettingsBtn.addEventListener('click', () => {
+          showLimitSettingsPanel = false;
+          dom.limitSettingsPanel.classList.add('hidden');
+          dom.openLimitSettingsBtn.setAttribute('aria-expanded', 'false');
+        });
+
+        dom.limitHighlightEnabled.addEventListener('change', (event) => {
+          limitSettings.enabled = Boolean(event.target.checked);
+          saveLimitSettingsToStorage();
+          renderAll();
+        });
+
+        dom.resetLimitDefaultsBtn.addEventListener('click', () => {
+          limitSettings = {
+            enabled: DEFAULT_LIMIT_SETTINGS.enabled,
+            lightRedLimits: [...DEFAULT_LIMIT_SETTINGS.lightRedLimits],
+            lightOrangeLimits: [...DEFAULT_LIMIT_SETTINGS.lightOrangeLimits],
+            lightYellowLimits: [...DEFAULT_LIMIT_SETTINGS.lightYellowLimits],
+            lightGreenLimits: [...DEFAULT_LIMIT_SETTINGS.lightGreenLimits],
+          };
+          syncLimitSettingsInputs();
+          saveLimitSettingsToStorage();
+          renderAll();
+          showFeedback('Reset limit color highlights to default tiers.', 'success');
+        });
+
+        dom.saveLimitSettingsBtn.addEventListener('click', () => {
+          const redResult = parseLimitList(dom.lightRedLimitsInput.value);
+          const orangeResult = parseLimitList(dom.lightOrangeLimitsInput.value);
+          const yellowResult = parseLimitList(dom.lightYellowLimitsInput.value);
+          const greenResult = parseLimitList(dom.lightGreenLimitsInput.value);
+
+          if (redResult.error) {
+            dom.limitSettingsError.textContent = `Light Red: ${redResult.error}`;
+            dom.limitSettingsError.classList.remove('hidden');
+            return;
+          }
+          if (orangeResult.error) {
+            dom.limitSettingsError.textContent = `Light Orange: ${orangeResult.error}`;
+            dom.limitSettingsError.classList.remove('hidden');
+            return;
+          }
+          if (yellowResult.error) {
+            dom.limitSettingsError.textContent = `Light Yellow: ${yellowResult.error}`;
+            dom.limitSettingsError.classList.remove('hidden');
+            return;
+          }
+          if (greenResult.error) {
+            dom.limitSettingsError.textContent = `Light Green: ${greenResult.error}`;
+            dom.limitSettingsError.classList.remove('hidden');
+            return;
+          }
+
+          dom.limitSettingsError.classList.add('hidden');
+          dom.limitSettingsError.textContent = '';
+
+          limitSettings = {
+            enabled: Boolean(dom.limitHighlightEnabled.checked),
+            lightRedLimits: redResult.values,
+            lightOrangeLimits: orangeResult.values,
+            lightYellowLimits: yellowResult.values,
+            lightGreenLimits: greenResult.values,
+          };
+          syncLimitSettingsInputs();
+          saveLimitSettingsToStorage();
+          renderAll();
+          showFeedback('Saved limit amount color highlight settings.', 'success');
+        });
+
+        // Form submit (Create or Update)
+        dom.entryForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const payload = validateForm();
+          if (!payload) return;
+
+          const currentEditId = dom.editingId.value.trim();
+          if (currentEditId) {
+            const index = entries.findIndex((e) => e.id === currentEditId);
+            if (index !== -1) {
+              entries[index] = {
+                id: currentEditId,
+                ...payload,
+              };
+              saveEntriesToStorage('update');
+              resetFormToAddMode(true);
+              renderAll();
+              showFeedback(
+                `Updated entry for "${payload.agentOrCompany}" on ${payload.date} and saved JSON.`,
+                'success'
+              );
+              return;
+            }
+          }
+
+          const newEntry = {
+            id: generateId(),
+            ...payload,
+          };
+          entries.push(newEntry);
+          saveEntriesToStorage('create');
+          resetFormToAddMode(true);
+          renderAll();
+          showFeedback(
+            `Added ${formatCurrency(payload.billAmt)} for "${payload.agentOrCompany}" on ${payload.date} and saved JSON.`,
+            'success'
+          );
+        });
+
+        // Cancel Edit / Close Entry Modal button
+        dom.cancelEditBtn.addEventListener('click', () => {
+          const wasEditing = Boolean(dom.editingId.value.trim());
+          resetFormToAddMode(true);
+          if (wasEditing) {
+            showFeedback('Edit cancelled.', 'info');
+          }
+        });
+
+        // Entries table action & row-click delegation (Edit / Delete / Show Details Popup)
+        dom.entriesTableBody.addEventListener('click', (event) => {
+          const btn = event.target.closest('button[data-action]');
+          if (btn) {
+            const action = btn.getAttribute('data-action');
+            const id = btn.getAttribute('data-id');
+            if (!id) return;
+
+            if (action === 'edit') {
+              startEditEntry(id);
+            } else if (action === 'delete') {
+              openDeleteWarningModal(id);
+            }
+            return;
+          }
+
+          const detailRow = event.target.closest('tr[data-entry-detail-id]');
+          if (detailRow) {
+            const entryId = detailRow.getAttribute('data-entry-detail-id');
+            if (entryId) {
+              openEntryDetailsModal(entryId);
+            }
+          }
+        });
+
+        // 30-Day Cards grid delegation (Quick Add, Edit, Delete, or Show Details Popup)
+        dom.thirtyDayCardsGrid.addEventListener('click', (event) => {
+          const quickAddBtn = event.target.closest('button[data-quick-add-date]');
+          if (quickAddBtn) {
+            const targetDate = quickAddBtn.getAttribute('data-quick-add-date');
+            if (targetDate) {
+              resetFormToAddMode(false);
+              openEntryFormModal(targetDate);
+            }
+            return;
+          }
+
+          const actionBtn = event.target.closest('button[data-action]');
+          if (actionBtn) {
+            const action = actionBtn.getAttribute('data-action');
+            const id = actionBtn.getAttribute('data-id');
+            if (!id) return;
+
+            if (action === 'edit') {
+              startEditEntry(id);
+            } else if (action === 'delete') {
+              openDeleteWarningModal(id);
+            }
+            return;
+          }
+
+          const detailItem = event.target.closest('li[data-entry-detail-id]');
+          if (detailItem) {
+            const entryId = detailItem.getAttribute('data-entry-detail-id');
+            if (entryId) {
+              openEntryDetailsModal(entryId);
+            }
+          }
+        });
+
+        // Entry Details popup modal controls
+        dom.closeEntryDetailsXBtn.addEventListener('click', closeEntryDetailsModal);
+        dom.closeEntryDetailsBtn.addEventListener('click', closeEntryDetailsModal);
+
+        dom.detailModalEditBtn.addEventListener('click', () => {
+          const entryId = activeDetailEntryId;
+          closeEntryDetailsModal();
+          if (entryId) {
+            startEditEntry(entryId);
+          }
+        });
+
+        dom.detailModalDeleteBtn.addEventListener('click', () => {
+          const entryId = activeDetailEntryId;
+          closeEntryDetailsModal();
+          if (entryId) {
+            openDeleteWarningModal(entryId);
+          }
+        });
+
+        dom.entryDetailsModal.addEventListener('click', (event) => {
+          if (event.target === dom.entryDetailsModal) {
+            closeEntryDetailsModal();
+          }
+        });
+
+        // Delete warning popup modal controls
+        dom.cancelDeleteModalBtn.addEventListener('click', closeDeleteWarningModal);
+
+        dom.confirmDeleteModalBtn.addEventListener('click', () => {
+          const idToDelete = pendingDeleteEntryId;
+          closeDeleteWarningModal();
+          if (idToDelete) {
+            deleteEntry(idToDelete);
+          }
+        });
+
+        dom.deleteWarningModal.addEventListener('click', (event) => {
+          if (event.target === dom.deleteWarningModal) {
+            closeDeleteWarningModal();
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key !== 'Escape') return;
+          if (pendingDeleteEntryId && !dom.deleteWarningModal.classList.contains('hidden')) {
+            closeDeleteWarningModal();
+          } else if (activeDetailEntryId && !dom.entryDetailsModal.classList.contains('hidden')) {
+            closeEntryDetailsModal();
+          } else if (dom.entryFormModal && !dom.entryFormModal.classList.contains('hidden')) {
+            resetFormToAddMode(true);
+          }
+        });
+
+        // View Switcher Tabs (30-Day Card View vs Table View)
+        dom.tabCardViewBtn.addEventListener('click', () => {
+          activeViewMode = 'cards';
+          renderAll();
+        });
+
+        dom.tabTableViewBtn.addEventListener('click', () => {
+          activeViewMode = 'table';
+          renderAll();
+        });
+
+        dom.toggleDailySumBtn.addEventListener('click', () => {
+          showDailySumPanel = !showDailySumPanel;
+          renderAll();
+        });
+
+        // 30-Day Window Navigation & Filter Controls
+        dom.prev30DaysBtn.addEventListener('click', () => {
+          windowStartDate = addDaysToIsoDate(windowStartDate, -30);
+          renderAll();
+        });
+
+        dom.next30DaysBtn.addEventListener('click', () => {
+          windowStartDate = addDaysToIsoDate(windowStartDate, 30);
+          renderAll();
+        });
+
+        dom.current30DaysBtn.addEventListener('click', () => {
+          windowStartDate = getDefault30DayStartDate();
+          renderAll();
+        });
+
+        dom.windowStartDateInput.addEventListener('change', (event) => {
+          const val = event.target.value;
+          if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+            windowStartDate = val;
+            renderAll();
+          }
+        });
+
+        dom.filterAll30DaysBtn.addEventListener('click', () => {
+          cardFilterMode = 'all';
+          renderAll();
+        });
+
+        dom.filterActiveDaysOnlyBtn.addEventListener('click', () => {
+          cardFilterMode = 'active';
+          renderAll();
+        });
+
+        // Clicking a row in the Daily Sum Total table filters entries and jumps to that day's 30-day window
+        dom.dailySumTableBody.addEventListener('click', (event) => {
+          const row = event.target.closest('tr[data-sum-date]');
+          if (!row) return;
+          const clickedDate = row.getAttribute('data-sum-date');
+          if (!clickedDate) return;
+
+          if (filterDate === clickedDate) {
+            filterDate = '';
+            dom.filterDateInput.value = '';
+          } else {
+            filterDate = clickedDate;
+            dom.filterDateInput.value = clickedDate;
+            const currentEnd = addDaysToIsoDate(windowStartDate, 29);
+            if (clickedDate < windowStartDate || clickedDate > currentEnd) {
+              windowStartDate = clickedDate;
+            }
+          }
+          renderAll();
+        });
+
+        dom.clearDateFilterLink.addEventListener('click', () => {
+          filterDate = '';
+          dom.filterDateInput.value = '';
+          renderAll();
+        });
+
+        // Search and Date filter controls
+        dom.searchInput.addEventListener('input', (event) => {
+          searchQuery = event.target.value;
+          renderAll();
+        });
+
+        dom.filterDateInput.addEventListener('change', (event) => {
+          filterDate = event.target.value;
+          renderAll();
+        });
+
+        dom.resetFiltersBtn.addEventListener('click', () => {
+          searchQuery = '';
+          filterDate = '';
+          dom.searchInput.value = '';
+          dom.filterDateInput.value = '';
+          renderAll();
+          showFeedback('Filters cleared.', 'info');
+        });
+
+        // Currency selector change
+        dom.currencySelect.addEventListener('change', (event) => {
+          const nextCurrency = event.target.value;
+          if (CURRENCY_CONFIG[nextCurrency]) {
+            selectedCurrency = nextCurrency;
+            try {
+              localStorage.setItem(CURRENCY_KEY, nextCurrency);
+            } catch (_err) {
+              // Ignore storage error
+            }
+            renderAll();
+            showFeedback(`Currency display switched to ${nextCurrency}.`, 'info');
+          }
+        });
+
+        // Reset to sample entries
+        dom.resetSamplesBtn.addEventListener('click', () => {
+          entries = createSampleEntries();
+          searchQuery = '';
+          filterDate = '';
+          windowStartDate = getDefault30DayStartDate();
+          cardFilterMode = 'all';
+          dom.searchInput.value = '';
+          dom.filterDateInput.value = '';
+          resetFormToAddMode(false);
+          saveEntriesToStorage('reset-samples');
+          renderAll();
+          showFeedback('Reset data to sample calendar day entries across the 30-day window.', 'success');
+        });
+
+        // Clear all entries with inline banner confirmation
+        dom.clearAllBtn.addEventListener('click', () => {
+          if (entries.length === 0) {
+            showFeedback('There are already no entries to clear.', 'info');
+            return;
+          }
+          showFeedback(
+            `Clear all ${entries.length} entries? This removes all records and daily sums.`,
+            'warning',
+            'Confirm Clear All',
+            () => {
+              entries = [];
+              resetFormToAddMode(true);
+              saveEntriesToStorage('clear-all');
+              renderAll();
+              showFeedback('All entries cleared.', 'info');
+            }
+          );
+        });
+
+        dom.confirmActionBtn.addEventListener('click', () => {
+          const fn = pendingConfirmAction;
+          hideFeedback();
+          if (typeof fn === 'function') {
+            fn();
+          }
+        });
+
+        // Export CSV & Save JSON buttons
+        dom.exportCsvBtn.addEventListener('click', exportToCsv);
+        dom.exportJsonBtn.addEventListener('click', downloadJsonSnapshot);
+
+        // Dismiss banner button
+        dom.dismissBannerBtn.addEventListener('click', hideFeedback);
+      }
+
+      /**
+       * Initializes the application once DOM is ready.
+       */
+      function init() {
+        const todayIso = getLocalIsoDateOffset(0);
+        dom.entryDate.value = todayIso;
+        windowStartDate = getDefault30DayStartDate();
+
+        loadSheetDbConfig();
+        loadEntriesFromStorage();
+        syncLimitSettingsInputs();
+        bindEvents();
+        renderAll();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
