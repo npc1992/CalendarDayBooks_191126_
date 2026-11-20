@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1366,6 +1366,8 @@
 
       const STORAGE_KEY = 'calendar_day_entries_v2';
       const JSON_SNAPSHOT_KEY = 'calendar_day_entries_json_snapshot_v1';
+      const SETTINGS_ENDPOINT = 'config.php';
+      const SETTINGS_JSON_FALLBACK = 'settings.json';
       const CURRENCY_KEY = 'calendar_day_entries_currency_v1';
       const LIMIT_SETTINGS_KEY = 'calendar_day_entries_limit_settings_v1';
       const SHEET_DB_CONFIG_KEY = 'calendar_day_entries_sheet_db_v1';
@@ -1416,6 +1418,7 @@
         autoSync: true,
         lastSyncAt: '',
       };
+      let settingsSourceUrl = SETTINGS_ENDPOINT;
       let bannerTimeout = null;
       let pendingConfirmAction = null;
       let pendingDeleteEntryId = null;
@@ -1931,56 +1934,222 @@
         dom.brandingFaviconUrlInput.value = brandingSettings.faviconValue || '';
       }
 
-      function loadBrandingSettings() {
+      function buildSettingsDocument() {
+        return {
+          schemaVersion: '1.0',
+          updatedAt: new Date().toISOString(),
+          currency: selectedCurrency,
+          branding: {
+            title: String(brandingSettings.title || DEFAULT_BRANDING.title),
+            subtitle:
+              brandingSettings.subtitle !== undefined
+                ? String(brandingSettings.subtitle)
+                : DEFAULT_BRANDING.subtitle,
+            logoUrl: String(brandingSettings.logoUrl || ''),
+            faviconValue: String(brandingSettings.faviconValue || ''),
+          },
+          limitSettings: {
+            enabled: Boolean(limitSettings.enabled),
+            lightRedLimits: [...(limitSettings.lightRedLimits || [])],
+            lightOrangeLimits: [...(limitSettings.lightOrangeLimits || [])],
+            lightYellowLimits: [...(limitSettings.lightYellowLimits || [])],
+            lightGreenLimits: [...(limitSettings.lightGreenLimits || [])],
+          },
+          sheetDbConfig: {
+            webhookUrl: String(sheetDbConfig.webhookUrl || '').trim(),
+            autoSync: Boolean(sheetDbConfig.autoSync),
+            lastSyncAt: String(sheetDbConfig.lastSyncAt || ''),
+          },
+        };
+      }
+
+      function applySettingsDocument(doc) {
+        if (!doc || typeof doc !== 'object') return;
+        const source = doc.settings && typeof doc.settings === 'object' ? doc.settings : doc;
+
+        if (source.currency && CURRENCY_CONFIG[source.currency]) {
+          selectedCurrency = source.currency;
+          if (dom.currencySelect) dom.currencySelect.value = selectedCurrency;
+        }
+
+        if (source.branding && typeof source.branding === 'object') {
+          brandingSettings = {
+            title: String(source.branding.title || DEFAULT_BRANDING.title),
+            subtitle:
+              source.branding.subtitle !== undefined
+                ? String(source.branding.subtitle)
+                : DEFAULT_BRANDING.subtitle,
+            logoUrl: String(source.branding.logoUrl || ''),
+            faviconValue: String(source.branding.faviconValue || ''),
+          };
+        }
+
+        if (source.limitSettings && typeof source.limitSettings === 'object') {
+          const ls = source.limitSettings;
+          limitSettings = {
+            enabled: ls.enabled !== undefined ? Boolean(ls.enabled) : true,
+            lightRedLimits: Array.isArray(ls.lightRedLimits)
+              ? ls.lightRedLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+              : [...DEFAULT_LIMIT_SETTINGS.lightRedLimits],
+            lightOrangeLimits: Array.isArray(ls.lightOrangeLimits)
+              ? ls.lightOrangeLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+              : [...DEFAULT_LIMIT_SETTINGS.lightOrangeLimits],
+            lightYellowLimits: Array.isArray(ls.lightYellowLimits)
+              ? ls.lightYellowLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+              : [...DEFAULT_LIMIT_SETTINGS.lightYellowLimits],
+            lightGreenLimits: Array.isArray(ls.lightGreenLimits)
+              ? ls.lightGreenLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
+              : [...DEFAULT_LIMIT_SETTINGS.lightGreenLimits],
+          };
+        }
+
+        if (source.sheetDbConfig && typeof source.sheetDbConfig === 'object') {
+          sheetDbConfig = {
+            webhookUrl: String(source.sheetDbConfig.webhookUrl || '').trim(),
+            autoSync:
+              source.sheetDbConfig.autoSync !== undefined ? Boolean(source.sheetDbConfig.autoSync) : true,
+            lastSyncAt: String(source.sheetDbConfig.lastSyncAt || ''),
+          };
+        }
+
+        syncBrandingInputs();
+        applyBrandingToDom();
+        syncLimitSettingsInputs();
+        if (dom.sheetWebhookUrlInput) dom.sheetWebhookUrlInput.value = sheetDbConfig.webhookUrl;
+        if (dom.sheetAutoSyncEnabled) dom.sheetAutoSyncEnabled.checked = Boolean(sheetDbConfig.autoSync);
+        updateSheetDbStatusText();
+      }
+
+      function downloadSettingsJsonFile(doc = buildSettingsDocument()) {
         try {
-          const raw = localStorage.getItem(BRANDING_SETTINGS_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object') {
-              brandingSettings = {
-                title: String(parsed.title || DEFAULT_BRANDING.title),
-                subtitle:
-                  parsed.subtitle !== undefined
-                    ? String(parsed.subtitle)
-                    : DEFAULT_BRANDING.subtitle,
-                logoUrl: String(parsed.logoUrl || ''),
-                faviconValue: String(parsed.faviconValue || ''),
-              };
+          const blob = new Blob([JSON.stringify(doc, null, 2)], {
+            type: 'application/json;charset=utf-8;',
+          });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = SETTINGS_JSON_FALLBACK;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (err) {
+          console.error('Failed to export settings JSON file:', err);
+        }
+      }
+
+      async function saveSettingsToConfigOrJson(notifyMessage = '', notifyType = 'success') {
+        const payload = buildSettingsDocument();
+        let savedToPhp = false;
+
+        try {
+          const res = await fetch(SETTINGS_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({ action: 'save_settings', settings: payload }),
+          });
+          if (res.ok) {
+            const data = await res.json().catch(() => ({}));
+            if (data && data.ok !== false) {
+              savedToPhp = true;
+              settingsSourceUrl = SETTINGS_ENDPOINT;
             }
           }
-        } catch (_err) {
-          brandingSettings = { ...DEFAULT_BRANDING };
+        } catch (err) {
+          console.warn('Could not save settings to config.php:', err);
         }
+
+        if (!savedToPhp) {
+          // Persist latest settings in memory/JSON snapshot and trigger settings.json download
+          // when config.php endpoint is not writable/available
+          try {
+            sessionStorage.setItem('calendar_day_settings_json_buffer', JSON.stringify(payload));
+          } catch (_err) {
+            // Ignore sessionStorage error
+          }
+          downloadSettingsJsonFile(payload);
+        }
+
+        if (notifyMessage) {
+          const targetLabel = savedToPhp ? 'config.php' : 'settings.json';
+          showFeedback(`${notifyMessage} (Saved to ${targetLabel})`, notifyType);
+        }
+        return savedToPhp;
+      }
+
+      async function loadSettingsFromConfigOrJson() {
+        let loadedDoc = null;
+
+        try {
+          const phpRes = await fetch(`${SETTINGS_ENDPOINT}?action=get_settings`, {
+            cache: 'no-store',
+          });
+          if (phpRes.ok) {
+            const phpData = await phpRes.json();
+            if (phpData && (phpData.settings || phpData.branding || phpData.limitSettings)) {
+              loadedDoc = phpData.settings || phpData;
+              settingsSourceUrl = SETTINGS_ENDPOINT;
+            }
+          }
+        } catch (_phpErr) {
+          // Fall back to settings.json
+        }
+
+        if (!loadedDoc) {
+          try {
+            const jsonRes = await fetch(SETTINGS_JSON_FALLBACK, { cache: 'no-store' });
+            if (jsonRes.ok) {
+              loadedDoc = await jsonRes.json();
+              settingsSourceUrl = SETTINGS_JSON_FALLBACK;
+            }
+          } catch (_jsonErr) {
+            // Fall back to session buffer if present
+          }
+        }
+
+        if (!loadedDoc) {
+          try {
+            const buffered = sessionStorage.getItem('calendar_day_settings_json_buffer');
+            if (buffered) {
+              loadedDoc = JSON.parse(buffered);
+              settingsSourceUrl = 'settings.json (session buffer)';
+            }
+          } catch (_bufErr) {
+            // Ignore buffer read error
+          }
+        }
+
+        if (loadedDoc) {
+          applySettingsDocument(loadedDoc);
+        } else {
+          syncBrandingInputs();
+          applyBrandingToDom();
+          syncLimitSettingsInputs();
+          updateSheetDbStatusText();
+        }
+      }
+
+      function loadBrandingSettings() {
         syncBrandingInputs();
         applyBrandingToDom();
       }
 
-      function saveBrandingSettings() {
+      async function saveBrandingSettings() {
         brandingSettings = {
           title: (dom.brandingTitleInput?.value || '').trim() || DEFAULT_BRANDING.title,
           subtitle: dom.brandingSubtitleInput?.value ?? DEFAULT_BRANDING.subtitle,
           logoUrl: (dom.brandingLogoUrlInput?.value || '').trim(),
           faviconValue: (dom.brandingFaviconUrlInput?.value || '').trim(),
         };
-        try {
-          localStorage.setItem(BRANDING_SETTINGS_KEY, JSON.stringify(brandingSettings));
-        } catch (_err) {
-          // Ignore storage write error
-        }
         applyBrandingToDom();
-        showFeedback('Updated Title, Logo, and Favicon settings.', 'success');
+        await saveSettingsToConfigOrJson('Updated Title, Logo, and Favicon settings', 'success');
       }
 
-      function resetBrandingSettings() {
+      async function resetBrandingSettings() {
         brandingSettings = { ...DEFAULT_BRANDING };
-        try {
-          localStorage.removeItem(BRANDING_SETTINGS_KEY);
-        } catch (_err) {
-          // Ignore storage error
-        }
         syncBrandingInputs();
         applyBrandingToDom();
-        showFeedback('Reset Title, Logo, and Favicon to defaults.', 'info');
+        await saveSettingsToConfigOrJson('Reset Title, Logo, and Favicon to defaults', 'info');
       }
 
       /* ------------------ Storage & JSON Snapshot Persistence ------------------ */
@@ -2053,41 +2222,15 @@
       }
 
       function saveLimitSettingsToStorage() {
-        try {
-          localStorage.setItem(LIMIT_SETTINGS_KEY, JSON.stringify(limitSettings));
-        } catch (err) {
-          console.error('Limit settings save failed:', err);
-        }
+        saveSettingsToConfigOrJson().catch((err) => {
+          console.error('Failed to save limit settings to config.php / .json:', err);
+        });
       }
 
       function loadEntriesFromStorage() {
         try {
-          const savedCurrency = localStorage.getItem(CURRENCY_KEY);
-          if (savedCurrency && CURRENCY_CONFIG[savedCurrency]) {
-            selectedCurrency = savedCurrency;
-          }
-          dom.currencySelect.value = selectedCurrency;
-
-          const savedLimitsRaw = localStorage.getItem(LIMIT_SETTINGS_KEY);
-          if (savedLimitsRaw) {
-            const parsedLimits = JSON.parse(savedLimitsRaw);
-            if (parsedLimits && typeof parsedLimits === 'object') {
-              limitSettings = {
-                enabled: parsedLimits.enabled !== undefined ? Boolean(parsedLimits.enabled) : true,
-                lightRedLimits: Array.isArray(parsedLimits.lightRedLimits)
-                  ? parsedLimits.lightRedLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
-                  : [...DEFAULT_LIMIT_SETTINGS.lightRedLimits],
-                lightOrangeLimits: Array.isArray(parsedLimits.lightOrangeLimits)
-                  ? parsedLimits.lightOrangeLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
-                  : [...DEFAULT_LIMIT_SETTINGS.lightOrangeLimits],
-                lightYellowLimits: Array.isArray(parsedLimits.lightYellowLimits)
-                  ? parsedLimits.lightYellowLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
-                  : [...DEFAULT_LIMIT_SETTINGS.lightYellowLimits],
-                lightGreenLimits: Array.isArray(parsedLimits.lightGreenLimits)
-                  ? parsedLimits.lightGreenLimits.map(Number).filter((n) => Number.isFinite(n) && n > 0)
-                  : [...DEFAULT_LIMIT_SETTINGS.lightGreenLimits],
-              };
-            }
+          if (dom.currencySelect) {
+            dom.currencySelect.value = selectedCurrency;
           }
 
           const rawEntries = localStorage.getItem(STORAGE_KEY);
@@ -2117,30 +2260,13 @@
       /* ------------------ Google Sheet DB Integration ------------------ */
 
       function loadSheetDbConfig() {
-        try {
-          const raw = localStorage.getItem(SHEET_DB_CONFIG_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object') {
-              sheetDbConfig = {
-                webhookUrl: String(parsed.webhookUrl || '').trim(),
-                autoSync: parsed.autoSync !== undefined ? Boolean(parsed.autoSync) : true,
-                lastSyncAt: String(parsed.lastSyncAt || ''),
-              };
-            }
-          }
-        } catch (_err) {
-          // Ignore storage read error
-        }
         updateSheetDbStatusText();
       }
 
       function saveSheetDbConfig() {
-        try {
-          localStorage.setItem(SHEET_DB_CONFIG_KEY, JSON.stringify(sheetDbConfig));
-        } catch (_err) {
-          // Ignore storage write error
-        }
+        saveSettingsToConfigOrJson().catch((err) => {
+          console.error('Failed to save Sheet DB config to config.php / .json:', err);
+        });
       }
 
       function updateSheetDbStatusText() {
@@ -3315,7 +3441,9 @@
           saveSheetDbConfig();
           updateSheetDbStatusText();
           showFeedback(
-            rawUrl ? 'Saved Google Sheet Web App URL.' : 'Cleared Google Sheet Web App URL.',
+            rawUrl
+              ? 'Saved Google Sheet Web App URL to config.php / .json.'
+              : 'Cleared Google Sheet Web App URL in config.php / .json.',
             'success'
           );
         });
@@ -3368,6 +3496,7 @@
           limitSettings.enabled = Boolean(event.target.checked);
           saveLimitSettingsToStorage();
           renderAll();
+          showFeedback('Saved limit amount color highlight settings to config.php / .json.', 'success');
         });
 
         dom.resetLimitDefaultsBtn.addEventListener('click', () => {
@@ -3753,11 +3882,7 @@
           const nextCurrency = event.target.value;
           if (CURRENCY_CONFIG[nextCurrency]) {
             selectedCurrency = nextCurrency;
-            try {
-              localStorage.setItem(CURRENCY_KEY, nextCurrency);
-            } catch (_err) {
-              // Ignore storage error
-            }
+            saveSettingsToConfigOrJson().catch((_err) => {});
             renderAll();
             showFeedback(`Currency display switched to ${nextCurrency}.`, 'info');
           }
@@ -3787,17 +3912,16 @@
       /**
        * Initializes the application once DOM is ready.
        */
-      function init() {
+      async function init() {
         try {
           const todayIso = getLocalIsoDateOffset(0);
           dom.entryDate.value = todayIso;
           windowStartDate = getDefault30DayStartDate();
 
-          loadBrandingSettings();
-          loadSheetDbConfig();
+          bindEvents();
+          await loadSettingsFromConfigOrJson();
           loadEntriesFromStorage();
           syncLimitSettingsInputs();
-          bindEvents();
           renderAll();
         } catch (err) {
           console.error('Initialization failed:', err);
