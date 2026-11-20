@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "updatedAt": "2026-11-20T00:00:00Z",
+  "updatedAt": "2026-11-20T00:36:13.919Z",
   "currency": "INR",
   "branding": {
     "title": "Calendar Day Entry & Daily Sum Tracker",
@@ -29,7 +29,7 @@
     ]
   },
   "sheetDbConfig": {
-    "webhookUrl": "",
+    "webhookUrl": "https://script.google.com/macros/s/AKfycbwmSEiB1T--uPU4blJ170L0r8Nt65iW-8Lgmc9IJ0cpSkQyMalASJH7BIw2jIcvc4PqKQ/exec",
     "autoSync": true,
     "lastSyncAt": ""
   }
