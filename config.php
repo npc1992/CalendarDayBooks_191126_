@@ -1,22 +1,42 @@
 <?php
 /**
- * Calendar Day Entry & Daily Sum Tracker - Server Settings Endpoint
+ * Calendar Day Entry & Daily Sum Tracker - Self-Contained PHP Settings File
  *
- * Reads and writes settings (currency, branding title/logo/favicon,
- * limit color highlight thresholds, and Google Sheet DB config) to settings.json.
+ * Stores all application settings (currency, branding title/logo/favicon,
+ * limit color highlight thresholds, and Google Sheet DB config) directly
+ * inside config.php without requiring a separate settings.json file.
  */
 
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-
-$settingsFile = __DIR__ . DIRECTORY_SEPARATOR . 'settings.json';
+const TRACKER_CONFIG_DATA = [
+    'schemaVersion' => '1.0',
+    'updatedAt' => '2026-11-20T00:00:00Z',
+    'currency' => 'INR',
+    'branding' => [
+        'title' => 'Calendar Day Entry & Daily Sum Tracker',
+        'subtitle' => 'Track daily bills & cheques with automatic separate daily sum totals',
+        'logoUrl' => '',
+        'faviconValue' => '',
+    ],
+    'limitSettings' => [
+        'enabled' => true,
+        'lightRedLimits' => [100000, 85000, 75000],
+        'lightOrangeLimits' => [65000, 55000],
+        'lightYellowLimits' => [45000, 35000],
+        'lightGreenLimits' => [25000, 15000],
+    ],
+    'sheetDbConfig' => [
+        'webhookUrl' => '',
+        'autoSync' => true,
+        'lastSyncAt' => '',
+    ],
+];
 
 /**
- * Default settings structure matching the tracker client.
+ * Default fallback settings structure.
  */
-function defaultSettingsDocument(): array
+function defaultTrackerSettings(): array
 {
     return [
         'schemaVersion' => '1.0',
@@ -44,9 +64,9 @@ function defaultSettingsDocument(): array
 }
 
 /**
- * Normalizes and validates an incoming settings document.
+ * Normalizes and validates an incoming settings array.
  */
-function normalizeSettingsDocument($raw, array $fallback): array
+function normalizeTrackerSettings($raw, array $fallback): array
 {
     if (!is_array($raw)) {
         return $fallback;
@@ -135,90 +155,98 @@ function normalizeSettingsDocument($raw, array $fallback): array
 }
 
 /**
- * Reads settings from settings.json or creates it with defaults if missing.
+ * Formats a PHP array as clean, readable PHP source code for TRACKER_CONFIG_DATA.
  */
-function readOrCreateSettings(string $filePath): array
+function exportPhpConfigConstant(array $settings): string
 {
-    $defaults = defaultSettingsDocument();
-    if (!file_exists($filePath)) {
-        @file_put_contents(
-            $filePath,
-            json_encode($defaults, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
-            LOCK_EX
-        );
-        return $defaults;
-    }
-
-    $content = @file_get_contents($filePath);
-    if ($content === false || trim($content) === '') {
-        return $defaults;
-    }
-
-    $decoded = json_decode($content, true);
-    if (!is_array($decoded)) {
-        return $defaults;
-    }
-
-    return normalizeSettingsDocument($decoded, $defaults);
+    $phpArray = var_export($settings, true);
+    $phpArray = preg_replace('/^array \(/m', '[', $phpArray);
+    $phpArray = preg_replace('/\)$/m', ']', $phpArray);
+    $phpArray = str_replace('array (', '[', $phpArray);
+    $phpArray = str_replace('),', '],', $phpArray);
+    $phpArray = preg_replace('/=>\s*\n\s*\[/', '=> [', $phpArray);
+    return "const TRACKER_CONFIG_DATA = " . $phpArray . ";";
 }
 
-try {
-    $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
-
-    if ($method === 'GET') {
-        $doc = readOrCreateSettings($settingsFile);
-        echo json_encode([
-            'ok' => true,
-            'source' => 'settings.json',
-            'settings' => $doc,
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
+/**
+ * Persists updated settings directly into config.php by replacing TRACKER_CONFIG_DATA.
+ */
+function writeSettingsIntoConfigPhp(string $selfPath, array $settings): bool
+{
+    $sourceCode = @file_get_contents($selfPath);
+    if ($sourceCode === false || $sourceCode === '') {
+        return false;
     }
 
-    if ($method === 'POST') {
-        $rawBody = file_get_contents('php://input');
-        $payload = json_decode($rawBody ?: '{}', true);
-        if (!is_array($payload)) {
-            http_response_code(400);
-            echo json_encode(['ok' => false, 'error' => 'Invalid JSON request body.']);
-            exit;
-        }
+    $newConstBlock = exportPhpConfigConstant($settings);
+    $pattern = '/const\s+TRACKER_CONFIG_DATA\s*=\s*\[.*?\];/s';
+    if (!preg_match($pattern, $sourceCode)) {
+        return false;
+    }
 
-        $current = readOrCreateSettings($settingsFile);
-        $normalized = normalizeSettingsDocument($payload, $current);
-        $encoded = json_encode(
-            $normalized,
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-        );
+    $updatedCode = preg_replace($pattern, $newConstBlock, $sourceCode, 1);
+    if (!is_string($updatedCode) || $updatedCode === '') {
+        return false;
+    }
 
-        if ($encoded === false) {
-            throw new RuntimeException('Failed to encode settings to JSON.');
-        }
+    return @file_put_contents($selfPath, $updatedCode, LOCK_EX) !== false;
+}
 
-        $written = @file_put_contents($settingsFile, $encoded . PHP_EOL, LOCK_EX);
-        if ($written === false) {
-            http_response_code(500);
+// Serve HTTP JSON API when accessed directly via browser/fetch
+if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+
+    try {
+        $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        $defaults = defaultTrackerSettings();
+        $currentSettings = normalizeTrackerSettings(TRACKER_CONFIG_DATA, $defaults);
+
+        if ($method === 'GET') {
             echo json_encode([
-                'ok' => false,
-                'error' => 'Unable to write settings.json. Check directory write permissions.',
-            ]);
+                'ok' => true,
+                'source' => 'config.php',
+                'settings' => $currentSettings,
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             exit;
         }
 
-        echo json_encode([
-            'ok' => true,
-            'message' => 'Settings saved to settings.json',
-            'settings' => $normalized,
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
-    }
+        if ($method === 'POST') {
+            $rawBody = file_get_contents('php://input');
+            $payload = json_decode($rawBody ?: '{}', true);
+            if (!is_array($payload)) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Invalid JSON request body.']);
+                exit;
+            }
 
-    http_response_code(405);
-    echo json_encode(['ok' => false, 'error' => 'Method not allowed.']);
-} catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode([
-        'ok' => false,
-        'error' => $e->getMessage(),
-    ]);
-}
+            $normalized = normalizeTrackerSettings($payload, $currentSettings);
+            $saved = writeSettingsIntoConfigPhp(__FILE__, $normalized);
+
+            if (!$saved) {
+                http_response_code(500);
+                echo json_encode([
+                    'ok' => false,
+                    'error' => 'Unable to write updated settings into config.php. Check file write permissions.',
+                ]);
+                exit;
+            }
+
+            echo json_encode([
+                'ok' => true,
+                'message' => 'Settings saved directly to config.php',
+                'settings' => $normalized,
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            exit;
+        }
+
+        http_response_code(405);
+        echo json_encode(['ok' => false, 'error' => 'Method not allowed.']);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            'ok' => false,
+            'error' => $e->getMessage(),
+        ]);
+    }
+} 
