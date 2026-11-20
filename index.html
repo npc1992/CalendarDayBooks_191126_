@@ -2176,14 +2176,27 @@
             grandTotal: computeGrandTotal(entries),
           };
 
-          const response = await fetch(sheetDbConfig.webhookUrl, {
+          const requestInit = {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload),
-          });
+          };
 
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+          let sentViaNoCors = false;
+          try {
+            const response = await fetch(sheetDbConfig.webhookUrl, requestInit);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+          } catch (corsOrNetErr) {
+            // Google Apps Script /exec POST redirects can trigger a network/CORS error in browsers
+            // even when the execution succeeds; retry with mode: 'no-cors' so the payload is sent.
+            await fetch(sheetDbConfig.webhookUrl, {
+              ...requestInit,
+              mode: 'no-cors',
+            });
+            sentViaNoCors = true;
+            console.warn('Retried Google Sheet push with no-cors after fetch error:', corsOrNetErr);
           }
 
           sheetDbConfig.lastSyncAt = new Date().toLocaleTimeString([], {
@@ -2195,12 +2208,20 @@
           updateSheetDbStatusText();
 
           if (!isSilent) {
-            showFeedback('Pushed entries & daily sums to Google Sheet database.', 'success');
+            showFeedback(
+              sentViaNoCors
+                ? 'Sent entries & daily sums to Google Sheet (no-cors mode). Click "Pull from Sheet" or open your Sheet to verify.'
+                : 'Pushed entries & daily sums to Google Sheet database.',
+              'success'
+            );
           }
         } catch (err) {
           console.error('Google Sheet push failed:', err);
           if (!isSilent) {
-            showFeedback(`Google Sheet sync error: ${err.message}`, 'error');
+            showFeedback(
+              `Google Sheet sync error: ${err.message}. Verify your /exec URL and "Who has access: Anyone".`,
+              'error'
+            );
           }
         } finally {
           if (!isSilent) {
@@ -2250,7 +2271,10 @@
           showFeedback(`Pulled ${entries.length} entries from Google Sheet database.`, 'success');
         } catch (err) {
           console.error('Google Sheet pull failed:', err);
-          showFeedback(`Failed to pull from Google Sheet: ${err.message}`, 'error');
+          showFeedback(
+            `Failed to pull from Google Sheet: ${err.message}. Check that the Web App URL ends in /exec and "Who has access" is set to Anyone.`,
+            'error'
+          );
         } finally {
           dom.pullFromSheetBtn.disabled = false;
           dom.pullFromSheetBtn.textContent = 'Pull from Sheet';
@@ -2992,8 +3016,13 @@
                       <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900 text-white tabular-nums shrink-0">
                         Day ${day.dayNumber}
                       </span>
-                      <div class="min-w-0">
-                        <div class="text-xs font-bold text-slate-900 tabular-nums truncate">
+                      <button
+                        type="button"
+                        data-card-date="${escapeHtml(day.date)}"
+                        class="min-w-0 text-left rounded-lg px-1.5 py-0.5 -mx-1.5 hover:bg-black/[0.06] transition cursor-pointer group"
+                        title="Click date to view all entries on ${escapeHtml(day.date)}"
+                      >
+                        <div class="text-xs font-bold text-slate-900 group-hover:text-indigo-700 tabular-nums truncate underline decoration-slate-300 group-hover:decoration-indigo-400 underline-offset-2">
                           ${escapeHtml(day.date)}
                           ${
                             day.isToday
@@ -3001,6 +3030,9 @@
                               : ''
                           }
                         </div>
+                        <div class="text-[10px] text-slate-500">${escapeHtml(weekdayStr)}</div>
+                      </button>
+                    </div>
                         <div class="text-[10px] text-slate-500">${escapeHtml(weekdayStr)}</div>
                       </div>
                     </div>
@@ -3468,8 +3500,17 @@
           }
         });
 
-        // 30-Day Cards grid delegation (Quick Add, Edit, Delete, or Show Details Popup)
+        // 30-Day Cards grid delegation (Click Date -> All Day Entries Popup, Quick Add, Edit, Delete, or Show Details Popup)
         dom.thirtyDayCardsGrid.addEventListener('click', (event) => {
+          const cardDateBtn = event.target.closest('button[data-card-date]');
+          if (cardDateBtn) {
+            const targetDate = cardDateBtn.getAttribute('data-card-date');
+            if (targetDate) {
+              openDayEntriesModal(targetDate);
+            }
+            return;
+          }
+
           const quickAddBtn = event.target.closest('button[data-quick-add-date]');
           if (quickAddBtn) {
             const targetDate = quickAddBtn.getAttribute('data-quick-add-date');
