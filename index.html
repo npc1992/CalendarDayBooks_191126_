@@ -1367,7 +1367,6 @@
       const STORAGE_KEY = 'calendar_day_entries_v2';
       const JSON_SNAPSHOT_KEY = 'calendar_day_entries_json_snapshot_v1';
       const SETTINGS_ENDPOINT = 'config.php';
-      const SETTINGS_JSON_FALLBACK = 'settings.json';
       const CURRENCY_KEY = 'calendar_day_entries_currency_v1';
       const LIMIT_SETTINGS_KEY = 'calendar_day_entries_limit_settings_v1';
       const SHEET_DB_CONFIG_KEY = 'calendar_day_entries_sheet_db_v1';
@@ -2020,24 +2019,6 @@
         updateSheetDbStatusText();
       }
 
-      function downloadSettingsJsonFile(doc = buildSettingsDocument()) {
-        try {
-          const blob = new Blob([JSON.stringify(doc, null, 2)], {
-            type: 'application/json;charset=utf-8;',
-          });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = SETTINGS_JSON_FALLBACK;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-        } catch (err) {
-          console.error('Failed to export settings JSON file:', err);
-        }
-      }
-
       async function saveSettingsToConfigOrJson(notifyMessage = '', notifyType = 'success') {
         const payload = buildSettingsDocument();
         let savedToPhp = false;
@@ -2060,19 +2041,22 @@
         }
 
         if (!savedToPhp) {
-          // Persist latest settings in memory/JSON snapshot and trigger settings.json download
-          // when config.php endpoint is not writable/available
           try {
-            sessionStorage.setItem('calendar_day_settings_json_buffer', JSON.stringify(payload));
+            sessionStorage.setItem('calendar_day_settings_php_buffer', JSON.stringify(payload));
           } catch (_err) {
             // Ignore sessionStorage error
           }
-          downloadSettingsJsonFile(payload);
         }
 
         if (notifyMessage) {
-          const targetLabel = savedToPhp ? 'config.php' : 'settings.json';
-          showFeedback(`${notifyMessage} (Saved to ${targetLabel})`, notifyType);
+          if (savedToPhp) {
+            showFeedback(`${notifyMessage} (Saved to config.php)`, notifyType);
+          } else {
+            showFeedback(
+              `${notifyMessage} (Could not write to config.php — check PHP server / file permissions)`,
+              'warning'
+            );
+          }
         }
         return savedToPhp;
       }
@@ -2092,27 +2076,15 @@
             }
           }
         } catch (_phpErr) {
-          // Fall back to settings.json
+          // Fall back to session buffer if PHP server is unavailable
         }
 
         if (!loadedDoc) {
           try {
-            const jsonRes = await fetch(SETTINGS_JSON_FALLBACK, { cache: 'no-store' });
-            if (jsonRes.ok) {
-              loadedDoc = await jsonRes.json();
-              settingsSourceUrl = SETTINGS_JSON_FALLBACK;
-            }
-          } catch (_jsonErr) {
-            // Fall back to session buffer if present
-          }
-        }
-
-        if (!loadedDoc) {
-          try {
-            const buffered = sessionStorage.getItem('calendar_day_settings_json_buffer');
+            const buffered = sessionStorage.getItem('calendar_day_settings_php_buffer');
             if (buffered) {
               loadedDoc = JSON.parse(buffered);
-              settingsSourceUrl = 'settings.json (session buffer)';
+              settingsSourceUrl = 'config.php (session buffer)';
             }
           } catch (_bufErr) {
             // Ignore buffer read error
