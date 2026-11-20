@@ -27,7 +27,7 @@ const TRACKER_CONFIG_DATA = [
         'lightGreenLimits' => [25000, 15000],
     ],
     'sheetDbConfig' => [
-        'webhookUrl' => '',
+        'webhookUrl' => 'https://script.google.com/macros/s/AKfycbwmSEiB1T--uPU4blJ170L0r8Nt65iW-8Lgmc9IJ0cpSkQyMalASJH7BIw2jIcvc4PqKQ/exec',
         'autoSync' => true,
         'lastSyncAt' => '',
     ],
